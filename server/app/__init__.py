@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, request
 
 
 def create_app(test_config=None):
@@ -28,5 +28,11 @@ def create_app(test_config=None):
     @app.route('/')
     def hello():
         return 'Hello, World!'
+
+    @app.route('/authorize')
+    def authorize():
+        print(request);
+        return 'Authorized'
+        
 
     return app
