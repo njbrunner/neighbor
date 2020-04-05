@@ -16,3 +16,5 @@ build/
 .vscode/
 
 client/node_modules/
+
+server/test_api.http

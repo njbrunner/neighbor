@@ -1,5 +1,6 @@
-// vue.config.js
 module.exports = {
-    publicPath: "/covid-19/",
-
-};
+  "publicPath": "/covid-19/",
+  "transpileDependencies": [
+    "vuetify"
+  ]
+}

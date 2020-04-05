@@ -1,0 +1,12 @@
+.light-theme {
+    /* --color-background: #ecfffd; */
+    --color-background: #f9f9f9;
+    --color-primary: red;
+    /* --color-secondary: #88c399; */
+}
+
+.dark-theme {
+  --color-background: #414141;
+  --color-primary: #E3E4FA;
+  /* --color-secondary: #88c399; */
+}
