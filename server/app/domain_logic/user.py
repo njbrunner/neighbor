@@ -4,8 +4,7 @@ from flask_jwt_extended import create_access_token
 from werkzeug.security import check_password_hash
 
 from app.models import User
-# from app.schemas import LoginSchema, UserSchema
-from app.schemas.user import LoginSchema, UserSchema
+from app.schemas import LoginSchema, UserSchema
 
 
 def signup(data: Dict[str, str]) -> User:

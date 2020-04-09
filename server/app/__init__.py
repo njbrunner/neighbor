@@ -1,10 +1,12 @@
 import os
 
-from flask import Flask, request
-from flask_pymongo import PyMongo
-from flask_mongoengine import MongoEngine
-from flask_jwt_extended import JWTManager
+from flask import Flask
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
+from flask_mongoengine import MongoEngine
+from flask_pymongo import PyMongo
+
+from app.utilities import create_default_roles
 
 
 class DevelopmentConfig(object):
@@ -48,6 +50,8 @@ def create_app(test_config=None):
 
     register_blueprints(app)
 
+    initialize_database()
+
     # a simple page that says hello
     @app.route('/')
     def hello():
@@ -68,3 +72,8 @@ def register_blueprints(app):
     """Register blueprints."""
     from app.routes import USER_BP
     app.register_blueprint(USER_BP)
+
+
+def initialize_database():
+    """Initialize database."""
+    create_default_roles()
