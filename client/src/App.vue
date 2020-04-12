@@ -16,6 +16,9 @@ export default {
   name: 'App',
   components: {
     Header
+  },
+  beforeUpdate() {
+    this.$store.dispatch('fetchUser');
   }
 };
 </script>

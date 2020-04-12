@@ -72,6 +72,8 @@ def register_blueprints(app):
     """Register blueprints."""
     from app.routes import USER_BP
     app.register_blueprint(USER_BP)
+    from app.routes import ROLE_BP
+    app.register_blueprint(ROLE_BP)
 
 
 def initialize_database():
