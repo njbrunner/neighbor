@@ -5,11 +5,11 @@ const state = {
 };
 
 const getters = {
-    getUser: state => state.user
+    getUser: state => state.user,
+    isLoggedIn: state => !!state.user
 };
 
 const actions = {
-
     signup({ commit }, userData) {
         return new Promise((resolve, reject) => {
             axios({
@@ -42,6 +42,10 @@ const actions = {
             });
         });
     },
+    logout({ commit }) {
+        localStorage.removeItem('user');
+        commit('logout');
+    },
     fetchUser({ commit }) {
         var storedUser = JSON.parse(localStorage.getItem('user'));
         if (!storedUser) {
@@ -58,6 +62,9 @@ const mutations = {
             localStorage.setItem('user', JSON.stringify(userData));
         }
     },
+    logout: (state) => {
+        state.user = undefined;
+    }
 };
 
 export default {
