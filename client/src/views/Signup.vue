@@ -5,7 +5,7 @@
         <h3 class="text-align-center">COVID-19</h3>
       </v-col>
       <v-col class="container-form">
-        <h3>Login</h3>
+        <h3>Sign Up</h3>
         <v-form class="form-style">
           <v-text-field
             v-model="email"
@@ -21,13 +21,30 @@
             outlined
             required
           ></v-text-field>
+          <v-text-field
+            v-model="confirmPassword"
+            label="Confirm Password"
+            prepend-inner-icon="mdi-lock-outline"
+            outlined
+            required
+          ></v-text-field>
+          <v-select
+            v-model="role"
+            :items="roles"
+            label="How would you like to participate?"
+            prepend-inner-icon="mdi-account-outline"
+            outlined
+            color="primary"
+            item-text="label"
+            item-value="id"
+          ></v-select>
           <v-btn
             block
             color="primary"
-            @click="login"
-          >Login</v-btn>
+            @click="signupUser"
+          >Sign Up</v-btn>
         </v-form>
-        <p>Not a user? <router-link class="link-login" to="/signup">Sign up.</router-link></p>
+        <p>Already a user? <router-link class="link-signup" to="/login">Login.</router-link></p>
       </v-col>
     </v-row>
 
@@ -46,17 +63,21 @@ export default {
     }
   },
   methods: {
-    login() {
-      let loginData = {
+    signupUser() {
+      let userData = {
         "email": this.email,
-        "password": this.password
+        "password": this.password,
+        "role": {
+          "id": this.role
+        }
       }
-      this.$store.dispatch('login', loginData)
+      this.$store.dispatch('signup', userData)
       .then(() => {
         this.$router.push({'name': 'Home'});
       })
       .catch(error => {
         this.$toasted.show(error);
+        console.log(error);
       });
     }
   },
@@ -94,7 +115,6 @@ export default {
 .container-form {
   height: auto;
   width: 100%;
-  text-align: center;
 }
 
 .text-align-center {
@@ -107,7 +127,7 @@ export default {
   /* margin: auto; */
 }
 
-.link-login {
+.link-signup {
   text-decoration: none;
 }
 </style>
