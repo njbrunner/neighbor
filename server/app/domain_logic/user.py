@@ -25,3 +25,12 @@ def login(data: Dict[str, str]) -> User:
         return user
 
     raise Exception
+
+
+def update_user_location(user_id: str, data: Dict[str, str]) -> User:
+    """Update user location."""
+    user = User.objects.get(id=user_id)
+    user.update(latitude=data['latitude'])
+    user.update(longitude=data['longitude'])
+    user.save()
+    return user

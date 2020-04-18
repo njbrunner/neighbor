@@ -18,3 +18,9 @@ def signup():
 def login():
     user = user_domain_logic.login(request.json)
     return UserSchema().dump(user)
+
+
+@USER_BP.route('/<user_id>', methods=['PATCH'])
+def update_user_location(user_id: str):
+    user = user_domain_logic.update_user_location(user_id, request.json)
+    return UserSchema().dump(user)

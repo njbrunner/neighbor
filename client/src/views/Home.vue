@@ -1,19 +1,14 @@
 <template>
   <div class="home">
     <h1>Home Page</h1>
-    <!-- <form action="https://auth.did.app/oidc/authorize" method="get">
-      <input name="client_id" value="test_Q5KWXO7n" type="hidden" />
-      <input name="redirect_uri" value="https://covid-19-hackathon-app.herokuapp.com/authorize/" type="hidden" />
-      <input name="response_mode" value="form_post" type="hidden" />
-
-      <button type="submit">Sign in</button>
-    </form> -->
-    <mode-selection :role=roleDefined></mode-selection>
+    <div>
+      {{ user.latitude }}
+      {{ user.longitude }}
+    </div>
   </div>
 </template>
 
 <script>
-import ModeSelection from '@/components/ModeSelection';
 
 export default {
   name: 'Home',
@@ -22,8 +17,55 @@ export default {
       roleDefined: true
     }
   },
-  components: {
-    ModeSelection
+  computed: {
+    user() {
+      return this.$store.getters.getUser;
+    }
+  },
+  methods: {
+    getlocation() {
+      if (!navigator.geolocation) {
+        console.log('Geolocation is not supported by your browser');
+        this.$toasted.show('Geolocation is not supported by your browser');
+      } else {
+        navigator.geolocation.getCurrentPosition(this.successLocation, this.errorLocation);
+      }
+    },
+    successLocation(position) {
+      const userLocationData = {
+        'userId': this.user.id,
+        'latitude': position.coords.latitude,
+        'longitude': position.coords.longitude
+      }
+      this.$store.dispatch(
+        'updateLocation',
+        userLocationData
+      )
+      .then(response => {
+        this.$store.dispatch('updateUser', response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+    },
+    errorLocation() {
+      console.log('Unable to retrieve your location');
+      this.$toasted.show('Unable to retrieve your location');
+    },
+    checkLocation() {
+      if(!this.user.latitude || !this.user.longitude) {
+        console.log('getLocation');
+        this.getlocation();
+      }
+    }
+  },
+  created() {
+    this.checkLocation();
+    console.log('created');
+  },
+  beforeUpdate() {
+    this.checkLocation();
+    console.log('upated');
   }
 }
 </script>

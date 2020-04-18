@@ -18,7 +18,7 @@ export default {
     Header
   },
   beforeUpdate() {
-    this.$store.dispatch('fetchUser');
+    // this.$store.dispatch('fetchUser');
   }
 };
 </script>
