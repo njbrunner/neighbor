@@ -46,26 +46,32 @@ export default {
       })
       .catch(error => {
         console.log(error);
+        this.$toasted.show(error.message);
       })
     },
-    errorLocation() {
-      console.log('Unable to retrieve your location');
-      this.$toasted.show('Unable to retrieve your location');
+    errorLocation(error) {
+      if (error.code == error.PERMISSION_DENIED) {
+        console.log('denied');
+        alert('This application needs to access your location data in order to pair you with ' +
+         'other users that either need help or can provide help. We will not share your location ' +
+         'with anyone.\n\n' +
+         'Please enable Location Permissions in your browser before selecting OK.');
+        this.getlocation();
+      } else {
+        this.$toasted.show('Unable to retrieve your location');
+      }
     },
     checkLocation() {
       if(!this.user.latitude || !this.user.longitude) {
-        console.log('getLocation');
         this.getlocation();
       }
     }
   },
   created() {
     this.checkLocation();
-    console.log('created');
   },
   beforeUpdate() {
     this.checkLocation();
-    console.log('upated');
   }
 }
 </script>
