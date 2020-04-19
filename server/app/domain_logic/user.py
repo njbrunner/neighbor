@@ -21,6 +21,7 @@ def login(data: Dict[str, str]) -> User:
 
     if check_password_hash(user.hashed_password, serialized_login_data['password']):
         user.auth_token = create_access_token(identity=user.email)
+        user.auth_token.add_grant()
         user.save()
         return user
 
