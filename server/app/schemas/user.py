@@ -17,6 +17,8 @@ class UserSchema(Schema):
     date_registered = fields.Date(dump_only=True)
     auth_token = fields.String(dump_only=True)
     role = fields.Nested(RoleSchema, required=True)
+    latitude = fields.Float()
+    longitude = fields.Float()
 
     @post_load
     def create_user(self, data, **kwargs):

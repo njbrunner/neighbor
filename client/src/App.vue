@@ -17,9 +17,6 @@ export default {
   components: {
     Header
   },
-  beforeUpdate() {
-    this.$store.dispatch('fetchUser');
-  }
 };
 </script>
 

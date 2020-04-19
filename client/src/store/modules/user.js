@@ -53,6 +53,29 @@ const actions = {
         }
         commit('updateUser', storedUser);
     },
+    updateUser({ commit }, userData) {
+        commit('updateUser', userData);
+    },
+    updateLocation({ commit}, userLocationData) {
+        const locationData = {
+            'latitude': userLocationData.latitude,
+            'longitude': userLocationData.longitude
+        }
+        return new Promise((resolve, reject) => {
+            axios({
+                url: 'http://127.0.0.1:8000/user/' + userLocationData.userId,
+                data: locationData,
+                method: "PATCH"
+            })
+            .then(response => {
+                commit('updateUser', response.data);
+                resolve(response)
+            })
+            .catch(error => {
+                reject(error);
+            })
+        });
+    }
 };
 
 const mutations = {
