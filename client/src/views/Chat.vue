@@ -83,27 +83,49 @@ export default {
             console.log('Created new channel: ' + channel.friendlyName);
             this.channel = channel;
             this.joinChannel();
-          })
+          });
       },
       getChannelMessages() {
         this.channel.getMessages()
           .then(messages => {
             this.channelMessages = messages.items;
-          })
+            this.subscribeToNewMessages();
+          });
+      },
+      subscribeToNewMessages() {
+        this.channel.on('messageAdded', () => {
+          this.getChannelMessages();
+        });
       },
       sendMessage(messageText) {
         this.channel.sendMessage(messageText)
           .then(() => {
             this.getChannelMessages();
           });
+      },
+      createChatClient() {
+        Chat.Client.create(this.user.auth_token, {'username': 'test'})
+        .then((client) => {
+          this.chatClient = client;
+          this.subscribeToExpiredToken();
+          this.doesChannelExist(this.channelUniqueName);
+        })
+        .catch(error => {
+          console.log(error.message);
+          if (error.message.toLowerCase().includes('access token expired')) {
+            console.log('YUP!');
+            //TODO: call refresh token route
+          }
+        });
+      },
+      subscribeToExpiredToken() {
+        this.chatClient.on('tokenExpired', () => {
+
+        })
       }
     },
     created() {
-      Chat.Client.create(this.user.auth_token, {'username': 'test'})
-        .then((client) => {
-          this.chatClient = client;
-          this.doesChannelExist(this.channelUniqueName);
-        });
+      this.createChatClient();
     },
     updated(){
       // console.log(this.$refs.inputContainer);
@@ -111,11 +133,11 @@ export default {
       // console.log(document.documentElement.clientHeight);
       // console.log(window.innerHeight);
       // console.log(document.getElementById('#appBar'));
-      if (this.channelMessages) {
-        let container = this.$refs.test;
-        container.scrollTop = container.scrollHeight;
-        document.body.scrollTop = container.scrollHeight;
-      }
+      // if (this.channelMessages) {
+      //   let container = this.$refs.test;
+      //   container.scrollTop = container.scrollHeight;
+      //   document.body.scrollTop = container.scrollHeight;
+      // }
     },
 }
 </script>

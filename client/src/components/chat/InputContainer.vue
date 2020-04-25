@@ -35,6 +35,7 @@ export default {
   methods: {
     sendMessage() {
       this.$emit('sendMessage', this.messageText);
+      this.messageText = undefined;
     }
   }
 };
