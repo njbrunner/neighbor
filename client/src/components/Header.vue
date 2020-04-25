@@ -1,6 +1,6 @@
 <template>
   <v-app-bar app dense color="primary" light>
-    <v-toolbar-title>Covid-19 Hackathon App</v-toolbar-title>
+    <img class="mr-3" :src="require('@/assets/images/neighbor_150x50.png')" height="50"/>
     <v-spacer></v-spacer>
 
       <v-menu open-on-hover offset-y v-if="isLoggedIn">
