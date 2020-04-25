@@ -1,15 +1,6 @@
 <template>
   <div class="home">
     <h1>Home Page</h1>
-    <div>
-      {{ user.latitude }}
-      {{ user.longitude }}
-    </div>
-    <br>
-    <h3>Chat:</h3>
-    <v-text-field
-      v-model="chatUser">
-    </v-text-field>
     <v-btn @click="goToChat">Chat</v-btn>
   </div>
 </template>
@@ -73,7 +64,7 @@ export default {
       }
     },
     goToChat() {
-      this.$router.push('/chat/' + this.chatUser);
+      this.$router.push({name: 'Chat', params: {user: this.user}});
     }
   },
   created() {

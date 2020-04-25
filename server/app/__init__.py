@@ -1,5 +1,7 @@
 import os
+from os.path import dirname, join
 
+from dotenv import find_dotenv, load_dotenv
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -7,6 +9,9 @@ from flask_mongoengine import MongoEngine
 from flask_pymongo import PyMongo
 
 from app.utilities import create_default_roles
+
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
 
 
 class DevelopmentConfig(object):
@@ -21,6 +26,11 @@ class DevelopmentConfig(object):
     MONGODB_SETTINGS = {
         'host': MONGO_URI
     }
+
+    ACCOUNT_SID = os.environ['TWILIO_ACCOUNT_SID']
+    API_KEY = os.environ['TWILIO_API_KEY']
+    API_SECRET = os.environ['TWILIO_API_SECRET']
+    CHAT_SERVICE_SID = os.environ.get('TWILIO_CHAT_SERVICE_SID', None)
 
 
 def create_app(test_config=None):
@@ -39,7 +49,7 @@ def create_app(test_config=None):
 
     register_blueprints(app)
 
-    initialize_database()
+    create_default_roles()
 
     # a simple page that says hello
     @app.route('/')
