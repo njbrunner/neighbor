@@ -22,7 +22,7 @@ def login(data: Dict[str, str]) -> User:
     user = User.objects.get(email=serialized_login_data['email'])
 
     if check_password_hash(user.hashed_password, serialized_login_data['password']):
-        token = generate_access_token(identity=user.email)
+        token = generate_access_token(identity=user.unique_identity)
         user.auth_token = token
         user.save()
         return user
