@@ -22,6 +22,13 @@ class DevelopmentConfig(object):
         'host': MONGO_URI
     }
 
+    ACCOUNT_SID = os.environ['TWILIO_ACCOUNT_SID']
+    API_KEY = os.environ['TWILIO_API_KEY']
+    API_SECRET = os.environ['TWILIO_API_SECRET']
+    CHAT_SERVICE_SID = os.environ.get('TWILIO_CHAT_SERVICE_SID', None)
+
+    SENDGRID_API_KEY = os.environ['SENDGRID_API_KEY']
+
 
 def create_app(test_config=None):
     # create and configure the app
