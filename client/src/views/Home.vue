@@ -1,10 +1,7 @@
 <template>
   <div class="home">
     <h1>Home Page</h1>
-    <div>
-      {{ user.latitude }}
-      {{ user.longitude }}
-    </div>
+    <v-btn @click="goToChat">Chat</v-btn>
   </div>
 </template>
 
@@ -14,7 +11,7 @@ export default {
   name: 'Home',
   data() {
     return {
-      roleDefined: true
+      chatUser: undefined
     }
   },
   computed: {
@@ -65,6 +62,9 @@ export default {
       if(!this.user.latitude || !this.user.longitude) {
         this.getlocation();
       }
+    },
+    goToChat() {
+      this.$router.push({name: 'Chat', params: {user: this.user}});
     }
   },
   created() {
