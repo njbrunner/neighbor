@@ -45,15 +45,13 @@ def get_nearby_users(user_id: str) -> List[User]:
     """
     user = User.objects.get(id=user_id)
 
-    query = {
-        '$and': [
-            {'$near': {
-                '$geometry': user.location,
-                '$maxDistance': NEARBY_DISTANCE_SETTING,
-            }},
-            {'user.role': {'$not': user.role}}
-        ]
-    }
+    print(User.objects())
 
-    users = User.objects(query)
+    users = User.objects(
+        location__near=user.location['coordinates'], 
+        location__max_distance=NEARBY_DISTANCE_SETTING,
+        role__ne=user.role
+    )
+    print(users)
+    print(NEARBY_DISTANCE_SETTING)
     return users

@@ -2,6 +2,7 @@
 
 from flask import url_for
 from flask.testing import FlaskClient
+import json
 from mongoengine import GeoJsonBaseField
 import pytest
 from werkzeug.security import generate_password_hash
@@ -29,8 +30,8 @@ def user(seeker):
     if (user):
         user.delete()
 
-    latitude = -89.999
-    longitude = -179.001
+    latitude = -89.99999
+    longitude = -179.00001
     user = User(
         email = email, 
         hashed_password = generate_password_hash(USER_PASSWORD),
@@ -50,8 +51,8 @@ def user2(provider):
     if (user):
         user.delete()
 
-    latitude = -89.997 # basically the south pole also
-    longitude = -100.01
+    latitude = -89.99997 # basically the south pole also
+    longitude = -100.00001
     user = User(
         email = email, 
         hashed_password = '1234567890ABCDEF',
@@ -71,8 +72,8 @@ def user3(provider):
     if (user):
         user.delete()
 
-    latitude = 0.02
-    longitude = 0.01
+    latitude = 0.00002
+    longitude = 0.00001
     user = User(
         email = email, 
         hashed_password = '1234567890ABCDEF',
@@ -92,8 +93,8 @@ def user4(provider):
     if (user):
         user.delete()
 
-    latitude = 0.0001
-    longitude = 0.0001
+    latitude = 0.00001
+    longitude = 0.00001
     user = User(
         email = email, 
         hashed_password = '1234567890ABCDEF',
@@ -126,7 +127,9 @@ def test_get_nearby_users(user, user2, user3, login, client):
     response = client.get(
         f'user/nearby/{user.id}'
     )
-    print(response.data)
+
+    response_json = json.loads(response.data)
+    assert(len(response_json) == 1)
 
 
 def test_get_nearby_users_no_results(user, user2, user3, user4, login, client):
@@ -134,4 +137,6 @@ def test_get_nearby_users_no_results(user, user2, user3, user4, login, client):
     response = client.get(
         f'user/nearby/{user3.id}'
     )
-    print(response.data)
+    
+    response_json = json.loads(response.data)
+    assert(len(response_json) == 0)
