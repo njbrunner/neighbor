@@ -1,113 +1,28 @@
 <template>
-  <v-container class="vertical-horizontal-center">
-    <v-row class="container-login">
-      <v-col class="container-logo">
-        <h3 class="text-align-center">COVID-19</h3>
-      </v-col>
-      <v-col class="container-form">
-        <h3>Login</h3>
-        <v-form class="form-style">
-          <v-text-field
-            v-model="email"
-            label="E-mail"
-            prepend-inner-icon="mdi-email-outline"
-            outlined
-            required
-          ></v-text-field>
-          <v-text-field
-            v-model="password"
-            label="Password"
-            prepend-inner-icon="mdi-lock-outline"
-            outlined
-            required
-          ></v-text-field>
-          <v-btn
-            block
-            color="primary"
-            @click="login"
-          >Login</v-btn>
-        </v-form>
-        <p>Not a user? <router-link class="link-login" to="/signup">Sign up.</router-link></p>
-      </v-col>
-    </v-row>
-
-  </v-container>
+<div>
+  <FormContainer>
+    <component :is="loginForm"></component>
+  </FormContainer>
+</div>
 </template>
 
 <script>
+import FormContainer from '@/components/landingPage/FormContainer';
+import LoginForm from '@/components/landingPage/LoginForm';
+
 export default {
-  name: "Signup",
+  name: "Login",
+  components: {
+    FormContainer,
+    LoginForm
+  },
   data() {
     return {
-      email: undefined,
-      password: undefined,
-      confirmPassword: undefined,
-      role: undefined
+      loginForm: 'LoginForm',
     }
-  },
-  methods: {
-    login() {
-      let loginData = {
-        "email": this.email,
-        "password": this.password
-      }
-      this.$store.dispatch('login', loginData)
-      .then(() => {
-        this.$router.push({'name': 'Home'});
-      })
-      .catch(error => {
-        this.$toasted.show(error);
-      });
-    }
-  },
-  computed: {
-    roles() {
-      return this.$store.getters.getRoles;
-    }
-  },
-  created() {
-      this.$store.dispatch('getRoles');
-  },
+  }
 };
 </script>
 
 <style>
-.vertical-horizontal-center {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.container-login {
-  width: 100%;
-  border: solid 2px var(--v-primary-base)
-}
-
-.container-logo {
-  height: auto;
-  width: 100%;
-  display: flex;
-  background-color: var(--v-primary-base)
-}
-
-.container-form {
-  height: auto;
-  width: 100%;
-  text-align: center;
-}
-
-.text-align-center {
-  text-align: center;
-  margin: auto;
-}
-
-.form-style {
-  margin: 32px;
-  /* margin: auto; */
-}
-
-.link-login {
-  text-decoration: none;
-}
 </style>
