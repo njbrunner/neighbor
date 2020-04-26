@@ -16,5 +16,5 @@ class User(Document):
     email_verified = fields.BooleanField(default=False)
     auth_token = fields.StringField(unique=True, required=False)
     role = fields.ReferenceField(Role, required=True)
-    latitude = fields.FloatField()
-    longitude = fields.FloatField()
+    location = fields.PointField()
+    

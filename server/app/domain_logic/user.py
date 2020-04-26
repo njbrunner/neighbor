@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 
 from flask_jwt_extended import create_access_token
 from werkzeug.security import check_password_hash
@@ -6,7 +6,8 @@ from werkzeug.security import check_password_hash
 from app.models import User
 from app.schemas import LoginSchema, UserSchema
 
-NEARBY_DISTANCE_SETTING = 5.0 # Distance in miles.
+RADIAN_DENOMINATOR = 0.62137 # Miles in a kilometer. Set to 1.609344 for kilometers to miles.
+NEARBY_DISTANCE_SETTING = 5.0 / RADIAN_DENOMINATOR # Distance in miles converted to kilometers.
 
 def signup(data: Dict[str, str]) -> User:
     """Save new user to database."""
@@ -31,61 +32,28 @@ def login(data: Dict[str, str]) -> User:
 def update_user_location(user_id: str, data: Dict[str, str]) -> User:
     """Update user location."""
     user = User.objects.get(id=user_id)
-    user.update(latitude=data['latitude'])
-    user.update(longitude=data['longitude'])
+    user.update(location={'type': 'Point', 'coordinates': [data['longitude'], data['latitude']]})
     user.save()
     return user
 
 
-def get_nearby_users(user_id: str) -> list:
+def get_nearby_users(user_id: str) -> List[User]:
     """
     Query and filter the list of users.
-    
-    Performs a linear distance query and then runs a haversine formula function 
-    to deal with shrinking latitude width at the poles and distance on a spherical surface.
+
+    Returns a list of Users.
     """
     user = User.objects.get(id=user_id)
-    
-    nearby_positions = __calculate_nearby_positions(user)
 
     query = {
-            '$or': [
-                {'user.longitude': {'$gt': nearby_positions['longitude_minimum']}},
-                {'user.longitude': {'$lt': nearby_positions['longitude_maximum']}}
-            ]  
-        }
-    if (nearby_positions['use_latitude']):
-        query = {
-            '$and': [
-                query, # insert longitude filter
-                {'$or': [
-                    {'user.latitude': {'$gt': nearby_positions['latitude_minimum']}},
-                    {'user.latitude': {'$lt': nearby_positions['latitude_maximum']}}
-                ]}  
-            ]
-        }
+        '$and': [
+            {'$near': {
+                '$geometry': user.location,
+                '$maxDistance': NEARBY_DISTANCE_SETTING,
+            }},
+            {'user.role': {'$not': user.role}}
+        ]
+    }
 
-    users = User.objects.find(query)
+    users = User.objects(query)
     return users
-
-
-def __calculate_nearby_positions(user: User) -> dict:
-    """Calculate the latitude and longitude needed to query nearby entities."""
-    nearby_positions = {}
-    nearby_positions['use_latitude'] = True
-    nearby_positions['latitude_minimum'] = user.latitude - NEARBY_DISTANCE_SETTING
-    if (nearby_positions['latitude_minimum'] < -180):
-        nearby_positions['latitude_minimum'] = nearby_positions['latitude_minimum'] + 360
-    nearby_positions['longitude_minimum'] = user.longitude - NEARBY_DISTANCE_SETTING
-    if (nearby_positions['longitude_minimum'] < -90):
-        nearby_positions['use_latitude'] = False
-        nearby_positions['longitude_minimum'] = -90
-    nearby_positions['latitude_maximum'] = user.latitude + NEARBY_DISTANCE_SETTING
-    if (nearby_positions['latitude_maximum'] > 180):
-        nearby_positions['latitude_maximum'] = nearby_positions['latitude_maximum'] - 360
-    nearby_positions['longitude_maximum'] = user.longitude + NEARBY_DISTANCE_SETTING
-    if (nearby_positions['longitude_maximum'] > 90):
-        nearby_positions['use_latitude'] = False
-        nearby_positions['longitude_maximum'] = 90
-    return nearby_positions
-

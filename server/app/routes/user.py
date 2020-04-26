@@ -24,3 +24,9 @@ def login():
 def update_user_location(user_id: str):
     user = user_domain_logic.update_user_location(user_id, request.json)
     return UserSchema().dump(user)
+
+
+@USER_BP.route('/nearby/<user_id>', methods=['GET'])
+def get_nearby_users(user_id: str):
+    users = user_domain_logic.get_nearby_users(user_id)
+    return [UserSchema().dump(user) for user in users]

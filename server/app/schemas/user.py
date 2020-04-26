@@ -2,6 +2,7 @@
 
 from flask_jwt_extended import create_access_token
 from marshmallow import Schema, fields, post_load
+from typing import Callable, Union
 from werkzeug.security import generate_password_hash
 
 from app.models import User
@@ -17,8 +18,12 @@ class UserSchema(Schema):
     date_registered = fields.Date(dump_only=True)
     auth_token = fields.String(dump_only=True)
     role = fields.Nested(RoleSchema, required=True)
-    latitude = fields.Float()
-    longitude = fields.Float()
+
+    _latitude: Callable[[User], Union[float, int]] = lambda user: user.location['coordinates'][1]
+    latitude = fields.Function(_latitude, dump_only=True)
+
+    _longitude: Callable[[User], Union[float, int]] = lambda user: user.location['coordinates'][0]
+    longitude = fields.Function(_longitude, dump_only=True)
 
     @post_load
     def create_user(self, data, **kwargs):
@@ -27,7 +32,8 @@ class UserSchema(Schema):
             'email': data['email'],
             'role': data['role'],
             'hashed_password': generate_password_hash(data['password']),
-            'auth_token': create_access_token(identity=data['email'])
+            'auth_token': create_access_token(identity=data['email']),
+            'location': {'type': 'Point', 'coordinates': [data['longitude'], data['latitude']]}
         }
         return User(**user_data)
 
