@@ -1,10 +1,10 @@
 from typing import Dict, List
 
-from flask_jwt_extended import create_access_token
 from werkzeug.security import check_password_hash
 
 from app.models import User
 from app.schemas import LoginSchema, UserSchema
+from app.utilities import generate_access_token
 
 RADIAN_DENOMINATOR = 0.62137 # Miles in a kilometer. Set to 1.609344 for kilometers to miles.
 NEARBY_DISTANCE_SETTING = 5.0 / RADIAN_DENOMINATOR # Distance in miles converted to kilometers.
@@ -22,7 +22,8 @@ def login(data: Dict[str, str]) -> User:
     user = User.objects.get(email=serialized_login_data['email'])
 
     if check_password_hash(user.hashed_password, serialized_login_data['password']):
-        user.auth_token = create_access_token(identity=user.email)
+        token = generate_access_token(identity=user.email)
+        user.auth_token = token
         user.save()
         return user
 

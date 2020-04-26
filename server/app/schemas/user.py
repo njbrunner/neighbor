@@ -7,6 +7,7 @@ from werkzeug.security import generate_password_hash
 
 from app.models import User
 from app.schemas import RoleSchema
+from app.utilities import generate_access_token
 
 
 class UserSchema(Schema):
@@ -28,11 +29,12 @@ class UserSchema(Schema):
     @post_load
     def create_user(self, data, **kwargs):
         """Create user after load."""
+        token = generate_access_token(identity=data['email'])
         user_data = {
             'email': data['email'],
             'role': data['role'],
             'hashed_password': generate_password_hash(data['password']),
-            'auth_token': create_access_token(identity=data['email']),
+            'auth_token': token,
             'location': {'type': 'Point', 'coordinates': [data['longitude'], data['latitude']]}
         }
         return User(**user_data)
