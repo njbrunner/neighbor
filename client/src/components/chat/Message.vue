@@ -2,7 +2,7 @@
 <div>
   <div
     class="message"
-    :class="message.author == user.email ? 'message-owned' : 'message-not-owned'">
+    :class="isMessageOwned ? 'message-owned' : 'message-not-owned'">
     <p class="message-timestamp">{{ message.timestamp }}</p>
     <div class="message-text-container">
       <p class="message-text add-shadow">{{ message.body }}</p>
@@ -17,6 +17,11 @@ export default {
   props: {
     message: Object,
     user: Object
+  },
+  computed: {
+    isMessageOwned() {
+      return (this.message.author == this.user.unique_identity)
+    }
   }
 };
 </script>

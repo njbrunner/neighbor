@@ -1,6 +1,10 @@
 <template>
   <v-app-bar app light id="appBar" ref="appBar">
-    <img class="mr-3" :src="require('@/assets/images/neighbor_150x50.png')" height="50"/>
+    <img
+      class="mr-3 pointer"
+      :src="require('@/assets/images/neighbor_150x50.png')"
+      height="50"
+      @click="goHome"/>
     <v-spacer></v-spacer>
 
       <v-menu open-on-hover offset-y v-if="isLoggedIn">
@@ -26,6 +30,9 @@ export default {
     logout() {
       this.$store.dispatch('logout');
       this.$router.push({'name': 'Login'});
+    },
+    goHome() {
+      this.$router.push({name: 'Home'});
     }
   },
   computed: {
@@ -37,4 +44,7 @@ export default {
 </script>
 
 <style>
+.pointer {
+  cursor: pointer;
+}
 </style>

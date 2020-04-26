@@ -93,8 +93,8 @@ export default {
           });
       },
       subscribeToNewMessages() {
-        this.channel.on('messageAdded', () => {
-          this.getChannelMessages();
+        this.channel.on('messageAdded', (message) => {
+          this.channelMessages.push(message);
         });
       },
       sendMessage(messageText) {
@@ -126,19 +126,7 @@ export default {
     },
     created() {
       this.createChatClient();
-    },
-    updated(){
-      // console.log(this.$refs.inputContainer);
-      // console.log(this.$refs.inputContainer.offsetHeight);
-      // console.log(document.documentElement.clientHeight);
-      // console.log(window.innerHeight);
-      // console.log(document.getElementById('#appBar'));
-      // if (this.channelMessages) {
-      //   let container = this.$refs.test;
-      //   container.scrollTop = container.scrollHeight;
-      //   document.body.scrollTop = container.scrollHeight;
-      // }
-    },
+    }
 }
 </script>
 
