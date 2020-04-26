@@ -17,8 +17,6 @@ class User(Document):
     hashed_password = fields.StringField(required=True)
     auth_token = fields.StringField(unique=True, required=False)
     role = fields.ReferenceField(Role, required=True)
-
+    location = fields.PointField()
     date_registered = fields.DateField(default=datetime.now())
     email_verified = fields.BooleanField(default=False)
-    latitude = fields.FloatField()
-    longitude = fields.FloatField()

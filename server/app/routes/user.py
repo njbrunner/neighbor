@@ -1,6 +1,6 @@
 """Endpoints for User database model."""
 
-from flask import Blueprint, request
+from flask import Blueprint, jsonify, request
 
 from app.domain_logic import user_domain_logic
 from app.schemas.user import user_schema
@@ -24,3 +24,9 @@ def login():
 def update_user_location(user_id: str):
     user = user_domain_logic.update_user_location(user_id, request.json)
     return user_schema.dump(user)
+
+
+@USER_BP.route('/nearby/<user_id>', methods=['GET'])
+def get_nearby_users(user_id: str):
+    users = user_domain_logic.get_nearby_users(user_id)
+    return jsonify([user_schema.dump(user) for user in users])
