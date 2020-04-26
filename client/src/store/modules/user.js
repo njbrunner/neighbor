@@ -5,11 +5,11 @@ const state = {
 };
 
 const getters = {
-    getUser: state => state.user
+    getUser: state => state.user,
+    isLoggedIn: state => !!state.user
 };
 
 const actions = {
-
     signup({ commit }, userData) {
         return new Promise((resolve, reject) => {
             axios({
@@ -42,6 +42,10 @@ const actions = {
             });
         });
     },
+    logout({ commit }) {
+        localStorage.removeItem('user');
+        commit('logout');
+    },
     fetchUser({ commit }) {
         var storedUser = JSON.parse(localStorage.getItem('user'));
         if (!storedUser) {
@@ -49,6 +53,29 @@ const actions = {
         }
         commit('updateUser', storedUser);
     },
+    updateUser({ commit }, userData) {
+        commit('updateUser', userData);
+    },
+    updateLocation({ commit}, userLocationData) {
+        const locationData = {
+            'latitude': userLocationData.latitude,
+            'longitude': userLocationData.longitude
+        }
+        return new Promise((resolve, reject) => {
+            axios({
+                url: 'http://127.0.0.1:8000/user/' + userLocationData.userId,
+                data: locationData,
+                method: "PATCH"
+            })
+            .then(response => {
+                commit('updateUser', response.data);
+                resolve(response)
+            })
+            .catch(error => {
+                reject(error);
+            })
+        });
+    }
 };
 
 const mutations = {
@@ -58,6 +85,9 @@ const mutations = {
             localStorage.setItem('user', JSON.stringify(userData));
         }
     },
+    logout: (state) => {
+        state.user = undefined;
+    }
 };
 
 export default {

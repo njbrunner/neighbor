@@ -14,8 +14,8 @@ export default new Vuetify({
     },
     themes: {
       light: {
-        primary: colors.blue.lighten4, // #B3E5FC
-        background: colors.grey.lighten5,
+        primary: '#ff0000',
+        background: colors.white,
       },
     },
   },

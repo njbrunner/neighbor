@@ -4,6 +4,7 @@ import VueRouter from 'vue-router';
 import Home from '@/views/Home';
 import Login from '@/views/Login';
 import Signup from '@/views/Signup';
+import Chat from '@/views/Chat';
 
 import store from '@/store';
 
@@ -33,6 +34,15 @@ const routes = [
     meta: {
       noToken: true
     }
+  },
+  {
+    path: '/chat/:user',
+    name: 'Chat',
+    component: Chat,
+    meta: {
+      requiresAuth: true
+    },
+    props: true
   }
 ];
 
