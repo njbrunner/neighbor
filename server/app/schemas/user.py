@@ -25,13 +25,6 @@ class UserSchema(Schema):
     date_registered = fields.Date(dump_only=True)
     auth_token = fields.String(dump_only=True)
     role = fields.Nested(RoleSchema, required=True)
-
-    _latitude: Callable[[User], Union[float, int]] = lambda user: user.location['coordinates'][1]
-    latitude = fields.Function(_latitude, dump_only=True)
-
-    _longitude: Callable[[User], Union[float, int]] = lambda user: user.location['coordinates'][0]
-    longitude = fields.Function(_longitude, dump_only=True)
-    
     unique_identity = fields.String(dump_only=True)
 
     @post_load
@@ -45,8 +38,7 @@ class UserSchema(Schema):
             'email': data['email'],
             'role': data['role'],
             'hashed_password': generate_password_hash(data['password']),
-            'auth_token': token,
-            'location': {'type': 'Point', 'coordinates': [data['longitude'], data['latitude']]}
+            'auth_token': token
         }
         return User(**user_data)
 
