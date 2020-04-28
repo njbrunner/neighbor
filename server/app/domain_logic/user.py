@@ -5,6 +5,7 @@ from werkzeug.security import check_password_hash
 from app.models import User
 from app.schemas import LoginSchema, UserSchema
 from app.utilities import generate_access_token
+from app.utilities import email_utility
 
 RADIAN_DENOMINATOR = 0.62137 # Miles in a kilometer. Set to 1.609344 for kilometers to miles.
 NEARBY_DISTANCE_SETTING = 5.0 / RADIAN_DENOMINATOR # Distance in miles converted to kilometers.
@@ -13,6 +14,9 @@ def signup(data: Dict[str, str]) -> User:
     """Save new user to database."""
     new_user = UserSchema().load(data)
     new_user.save()
+
+    email_utility.send_email()
+
     return new_user
 
 
@@ -49,7 +53,7 @@ def get_nearby_users(user_id: str) -> List[User]:
     print(User.objects())
 
     users = User.objects(
-        location__near=user.location['coordinates'], 
+        location__near=user.location['coordinates'],
         location__max_distance=NEARBY_DISTANCE_SETTING,
         role__ne=user.role
     )
