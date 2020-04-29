@@ -50,6 +50,8 @@ def user(seeker):
     longitude = -179.00001
     user = User(
         email = email, 
+        name = 'Spicy Pete',
+        unique_identity = '1234',
         hashed_password = generate_password_hash(USER_PASSWORD),
         email_verified = True,
         auth_token = email,
@@ -61,7 +63,7 @@ def user(seeker):
     user.delete()
 
 @pytest.fixture
-def seeker(user):
+def seeker_user(user):
     yield user
 
 @pytest.fixture
@@ -75,6 +77,8 @@ def user2(provider):
     longitude = -100.00001
     user = User(
         email = email, 
+        name = 'Max the doggo',
+        unique_identity = '12345',
         hashed_password = '1234567890ABCDEF',
         email_verified = True,
         auth_token = email,
@@ -86,7 +90,7 @@ def user2(provider):
     user.delete()
 
 @pytest.fixture
-def provider(user2):
+def provider_user(user2):
     yield user2
 
 @pytest.fixture
@@ -100,6 +104,8 @@ def user3(provider):
     longitude = 0.00001
     user = User(
         email = email, 
+        name = 'Claire',
+        unique_identity = '123456',
         hashed_password = '1234567890ABCDEF',
         email_verified = True,
         auth_token = email,
@@ -121,6 +127,8 @@ def user4(provider):
     longitude = 0.00001
     user = User(
         email = email, 
+        name = 'Steve',
+        unique_identity = '1234567',
         hashed_password = '1234567890ABCDEF',
         email_verified = True,
         auth_token = email,

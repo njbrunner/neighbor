@@ -38,20 +38,22 @@ def update_user_location(user_id: str, data: Dict[str, str]) -> User:
     return user
 
 
-def get_nearby_users(user_id: str) -> List[User]:
+def get_potential_neighbors(user_id: str) -> List[User]:
     """
     Query and filter the list of users.
 
     Returns a list of Users.
     """
-    user = User.objects.get(id=user_id)
+    user = User.objects.get(unique_identity=user_id)
 
     print(User.objects())
 
     users = User.objects(
         location__near=user.location['coordinates'], 
         location__max_distance=NEARBY_DISTANCE_SETTING,
-        role__ne=user.role
+        role__ne=user.role,
+        unique_identity__nin=[ neighbor.unique_identity for neighbor in user.neighbors ]
+            + [ neighbor.unique_identity for neighbor in user.blacklisted_neighbors ]
     )
     print(users)
     print(NEARBY_DISTANCE_SETTING)

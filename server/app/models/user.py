@@ -2,7 +2,7 @@ from datetime import datetime
 
 from mongoengine import Document, fields
 
-from app.models import Neighbor, Role
+from app.models import Role
 
 """Define the model for a user."""
 
@@ -20,4 +20,5 @@ class User(Document):
     location = fields.PointField()
     date_registered = fields.DateField(default=datetime.now())
     email_verified = fields.BooleanField(default=False)
-    relationships = fields.ListField(fields.ReferenceField(Neighbor))
+    neighbors = fields.ListField(fields.ReferenceField('self'))
+    blacklisted_neighbors = fields.ListField(fields.ReferenceField('self'))
