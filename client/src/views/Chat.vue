@@ -3,22 +3,29 @@
   <h1 v-if="channel">{{ channel.friendlyName }}</h1>
   <hr>
 
-  <MessageContainer
-    :messages="channelMessages"
-    :user="user">
-  </MessageContainer>
+  <v-row>
+    <v-col
+      :cols="3">
+      <ChatSidebar></ChatSidebar>
+    </v-col>
+    <v-col
+      :cols="9">
+      <MessageContainer
+        :messages="channelMessages"
+        :user="user">
+      </MessageContainer>
+    </v-col>
+  </v-row>
 
-  <InputContainer
-    @sendMessage="sendMessage">
-  </InputContainer>
+
 
 </div>
 </template>
 
 <script>
 const Chat = require('twilio-chat');
+import ChatSidebar from '@/components/chat/ChatSidebar';
 import MessageContainer from '@/components/chat/MessageContainer';
-import InputContainer from '@/components/chat/InputContainer';
 
 export default {
     name: 'Chat',
@@ -26,8 +33,8 @@ export default {
         user: Object
     },
     components: {
-      MessageContainer,
-      InputContainer
+      ChatSidebar,
+      MessageContainer
     },
     data() {
       return {
@@ -35,7 +42,8 @@ export default {
         channel: undefined,
         channelUniqueName: 'test',
         channelFriendlyName: 'Test Channel',
-        channelMessages: undefined
+        channelMessages: undefined,
+        channels: undefined
       }
     },
     methods: {

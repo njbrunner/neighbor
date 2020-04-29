@@ -10,10 +10,15 @@
       :message="message"
       :user="user">
     </Message>
+
+    <InputContainer
+      @sendMessage="sendMessage">
+    </InputContainer>
   </v-container>
 </template>
 
 <script>
+import InputContainer from '@/components/chat/InputContainer';
 import Message from '@/components/chat/Message';
 
 export default {
@@ -23,7 +28,16 @@ export default {
       user: Object,
     },
     components: {
+      InputContainer,
       Message
+    },
+    methods: {
+      sendMessage(messageText) {
+        this.channel.sendMessage(messageText)
+          .then(() => {
+            this.getChannelMessages();
+          });
+      },
     }
 }
 </script>
@@ -31,5 +45,6 @@ export default {
 <style>
 .message-container {
   margin-bottom: 100px;
+  width: 100%;
 }
 </style>

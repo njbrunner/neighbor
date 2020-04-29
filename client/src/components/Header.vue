@@ -45,7 +45,7 @@ export default {
       this.$router.push({name: 'Home'});
     },
     goToChat() {
-      this.$router.push({name: 'Chat', params: {user: this.user}});
+      this.$router.push({name: 'Chat'});
     }
   },
   computed: {

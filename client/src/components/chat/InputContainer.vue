@@ -46,13 +46,13 @@ export default {
   padding-top: 16px;
   position: fixed;
   bottom: 0;
-  width: 100%;
-  min-width: inherit;
+  /* width: 100%;
+  min-width: inherit; */
   background-color: white;
 }
 .input-container {
-  width: inherit;
-  max-width: inherit;
+  /* width: inherit;
+  max-width: inherit; */
 }
 
 .button-send-shadow {
