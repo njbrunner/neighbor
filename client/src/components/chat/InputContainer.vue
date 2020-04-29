@@ -44,15 +44,9 @@ export default {
 <style>
 .input-container-background {
   padding-top: 16px;
-  position: fixed;
-  bottom: 0;
-  /* width: 100%;
-  min-width: inherit; */
   background-color: white;
 }
 .input-container {
-  /* width: inherit;
-  max-width: inherit; */
 }
 
 .button-send-shadow {
