@@ -2,7 +2,6 @@
 import uuid
 
 from marshmallow import Schema, fields, post_load
-from typing import Callable, Union
 from werkzeug.security import generate_password_hash
 
 from app.models import User
@@ -26,6 +25,7 @@ class UserSchema(Schema):
     auth_token = fields.String(dump_only=True)
     role = fields.Nested(RoleSchema, required=True)
     unique_identity = fields.String(dump_only=True)
+    location_identified = fields.Boolean(dump_only=True)
 
     @post_load
     def create_user(self, data, **kwargs):

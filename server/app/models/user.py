@@ -18,5 +18,6 @@ class User(Document):
     auth_token = fields.StringField(unique=True, required=False)
     role = fields.ReferenceField(Role, required=True)
     location = fields.PointField()
+    location_identified = fields.BooleanField(default=False, required=True)
     date_registered = fields.DateField(default=datetime.now())
     email_verified = fields.BooleanField(default=False)

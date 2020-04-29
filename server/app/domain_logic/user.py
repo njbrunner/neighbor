@@ -34,6 +34,7 @@ def update_user_location(user_id: str, data: Dict[str, str]) -> User:
     """Update user location."""
     user = User.objects.get(id=user_id)
     user.update(location={'type': 'Point', 'coordinates': [data['longitude'], data['latitude']]})
+    user.location_identified = True
     user.save()
     return user
 
@@ -49,7 +50,7 @@ def get_nearby_users(user_id: str) -> List[User]:
     print(User.objects())
 
     users = User.objects(
-        location__near=user.location['coordinates'], 
+        location__near=user.location['coordinates'],
         location__max_distance=NEARBY_DISTANCE_SETTING,
         role__ne=user.role
     )
