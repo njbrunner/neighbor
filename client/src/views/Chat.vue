@@ -88,6 +88,13 @@ export default {
       getChannelMessages() {
         this.channel.getMessages()
           .then(messages => {
+            console.log(messages);
+            this.channel.getMembers()
+              .then(members => {
+                console.log(members)
+                members[0].getUser()
+                  .then(user => console.log(user));
+              });
             this.channelMessages = messages.items;
             this.subscribeToNewMessages();
           });
@@ -98,7 +105,7 @@ export default {
         });
       },
       sendMessage(messageText) {
-        this.channel.sendMessage(messageText)
+        this.channel.sendMessage(messageText, {'sender': this.user.name})
           .then(() => {
             this.getChannelMessages();
           });
@@ -106,6 +113,7 @@ export default {
       createChatClient() {
         Chat.Client.create(this.user.auth_token, {'username': 'test'})
         .then((client) => {
+          console.log(client);
           this.chatClient = client;
           this.subscribeToExpiredToken();
           this.doesChannelExist(this.channelUniqueName);
