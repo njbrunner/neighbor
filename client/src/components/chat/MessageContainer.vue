@@ -38,6 +38,13 @@ export default {
         messages: undefined
       }
     },
+    watch: {
+      selectedChannel() {
+        if (this.selectedChannel) {
+          this.getChannelMessages();
+        }
+      }
+    },
     methods: {
       sendMessage(messageText) {
         this.selectedChannel.sendMessage(messageText)
@@ -46,11 +53,11 @@ export default {
           });
       },
       getChannelMessages() {
-        console.log('get channel messages');
         this.selectedChannel.getMessages()
           .then(messages => {
             this.messages = messages.items;
-            // this.subscribeToNewMessages();
+            this.subscribeToNewMessages();
+            this.scrollToBottom();
           });
       },
       subscribeToNewMessages() {
@@ -59,14 +66,10 @@ export default {
         });
       },
       scrollToBottom() {
-        console.log('scroll to bottom');
-        const messageBody = this.$refs.messageBody;
-        messageBody.scrollTop = 10000000000;
+        let messageBody = this.$refs.messageBody;
+        messageBody.scrollTop = 1000;
       }
     },
-    updated() {
-      this.getChannelMessages()
-    }
 }
 </script>
 
@@ -75,7 +78,7 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 65px);
+  height: calc(100vh - 100px);
 }
 
 .messages {

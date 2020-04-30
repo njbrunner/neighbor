@@ -5,7 +5,7 @@
   ref="inputContainer">
   <v-layout
     class="input-container">
-    <v-flex xs11>
+    <div class="input">
       <v-text-field
         v-model="messageText"
         label="Message"
@@ -14,12 +14,12 @@
         solo
         color="primary">
       </v-text-field>
-    </v-flex>
-    <v-flex xs1 class="text-align-center">
+    </div>
+    <div class="button-send">
       <v-btn @click="sendMessage" fab>
         <v-icon class="primary--text">mdi-send</v-icon>
       </v-btn>
-    </v-flex>
+    </div>
   </v-layout>
 </v-container>
 </template>
@@ -42,19 +42,21 @@ export default {
 </script>
 
 <style>
-.input-container-background {
-  padding-top: 16px;
-  background-color: white;
-}
 .input-container {
+  margin-bottom: -40px;
+  display: flex;
+  flex-direction: row;
+}
+
+.input {
+  flex: 1;
+}
+
+.button-send {
+  margin-left: 15px;
 }
 
 .button-send-shadow {
   padding: 5px;
-}
-
-.text-align-center {
-  text-align: center;
-  margin: 0;
 }
 </style>
