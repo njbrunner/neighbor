@@ -4,7 +4,7 @@ from werkzeug.security import check_password_hash
 
 from app.models import User
 from app.schemas import LoginSchema, UserSchema
-from app.utilities import generate_access_token
+from app.utilities import generate_access_token, create_twilio_user
 
 RADIAN_DENOMINATOR = 0.62137 # Miles in a kilometer. Set to 1.609344 for kilometers to miles.
 NEARBY_DISTANCE_SETTING = 5.0 / RADIAN_DENOMINATOR # Distance in miles converted to kilometers.
@@ -13,6 +13,10 @@ def signup(data: Dict[str, str]) -> User:
     """Save new user to database."""
     new_user = UserSchema().load(data)
     new_user.save()
+
+    # Create Twilio user
+    create_twilio_user(new_user.unique_identity, new_user.name)
+
     return new_user
 
 
@@ -49,7 +53,7 @@ def get_potential_neighbors(user_id: str) -> List[User]:
     print(User.objects())
 
     users = User.objects(
-        location__near=user.location['coordinates'], 
+        location__near=user.location['coordinates'],
         location__max_distance=NEARBY_DISTANCE_SETTING,
         role__ne=user.role,
         unique_identity__nin=[ neighbor.unique_identity for neighbor in user.neighbors ]
