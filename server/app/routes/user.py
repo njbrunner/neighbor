@@ -39,17 +39,15 @@ def get_neighbors(user_id: str):
     return jsonify([user_schema.dump(user) for user in users])
 
 
-@USER_BP.route('/add_neighbor', methods=['PUT'])
-def add_neighbor():
-    current_user_id = request.json['current_user_id']
+@USER_BP.route('/add_neighbor/<user_id>', methods=['PUT'])
+def add_neighbor(user_id: int):
     neighbor_id = request.json['neighbor_id']
-    user_domain_logic.add_neighbor(current_user_id, neighbor_id)
+    user_domain_logic.add_neighbor(user_id, neighbor_id)
     return "Updated successfully.", HTTPStatus.NO_CONTENT
 
 
-@USER_BP.route('/remove_neighbor', methods=['PUT'])
-def remove_neighbor():
-    current_user_id = request.json['current_user_id']
+@USER_BP.route('/remove_neighbor/<user_id>', methods=['PUT'])
+def remove_neighbor(user_id):
     neighbor_id = request.json['neighbor_id']
-    user_domain_logic.black_list_neighbor(current_user_id, neighbor_id)
+    user_domain_logic.black_list_neighbor(user_id, neighbor_id)
     return "Updated successfully.", HTTPStatus.NO_CONTENT

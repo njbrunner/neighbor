@@ -63,20 +63,19 @@ def get_potential_neighbors(user_id: str) -> List[User]:
 
 def get_neighbors(user_id: str):
     """Get the collection of neighbors for a user."""
-    user = User.objects.get(unique_identity=user_id)
+    user = User.objects.get(id=user_id)
     return user.neighbors
 
 
 def add_neighbor(current_user_id: str, neighbor_id: str) -> None:
     """
     Adds a user to the tracked neighbors so they don't appear in potential neighbor queries.
-
-    Note that this is unidirectional and it does not update the neighbor to be joined with this user.
     """
-    user = User.objects.get(unique_identity=current_user_id)
+    user = User.objects.get(id=current_user_id)
     neighbor = User.objects.get(unique_identity=neighbor_id)
 
     user.update(add_to_set__neighbors=neighbor)
+    neighbor.update(add_to_set__neighbors=user)
 
 
 def black_list_neighbor(current_user_id: str, neighbor_id: str) -> None:
@@ -85,7 +84,7 @@ def black_list_neighbor(current_user_id: str, neighbor_id: str) -> None:
 
     Note that this is unidirectional and it does not update the neighbor to be joined with this user.
     """
-    user = User.objects.get(unique_identity=current_user_id)
+    user = User.objects.get(id=current_user_id)
     neighbor = User.objects.get(unique_identity=neighbor_id)
 
     user.update(pull__neighbors=neighbor)
