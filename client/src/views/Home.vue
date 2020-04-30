@@ -1,6 +1,11 @@
 <template>
   <div class="home">
     <h1>Home Page</h1>
+    <div
+      v-for="(potentialNeighbor, index) in potentialNeighbors"
+      :key="index">
+      {{ potentialNeighbor }}
+    </div>
   </div>
 </template>
 
@@ -15,6 +20,11 @@ export default {
   },
   props: {
     user: Object
+  },
+  computed: {
+    potentialNeighbors() {
+      return this.$store.getters.getPotentialNeighbors;
+    }
   },
   methods: {
     getlocation() {
