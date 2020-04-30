@@ -38,6 +38,7 @@ def update_user_location(user_id: str, data: Dict[str, str]) -> User:
     """Update user location."""
     user = User.objects.get(id=user_id)
     user.update(location={'type': 'Point', 'coordinates': [data['longitude'], data['latitude']]})
+    user.location_identified = True
     user.save()
     return user
 

@@ -1,9 +1,9 @@
 <template>
   <v-app class="background-color">
-    <Header></Header>
+    <Header :user="user"></Header>
     <v-content>
       <v-container>
-        <router-view></router-view>
+        <router-view :user="user"></router-view>
       </v-container>
     </v-content>
   </v-app>
@@ -16,6 +16,11 @@ export default {
   name: 'App',
   components: {
     Header
+  },
+  computed: {
+    user() {
+      return this.$store.getters.getUser;
+    }
   },
 };
 </script>
