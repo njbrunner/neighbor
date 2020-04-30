@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import PotentialNeighbor from '@/components/PotentialNeighbor';
 
 export default {
@@ -63,8 +64,9 @@ export default {
         .then(() => {
           channel.invite(potentialNeighborUniqueIdentity)
             .then(() => {
+              this.addPotentialNeighborToNeighbors(potentialNeighborUniqueIdentity);
               this.$router.push({name: 'Chat'});
-            })
+            });
         });
     },
     createChannel(newChannelData) {
@@ -79,6 +81,13 @@ export default {
         .then(channel => {
           this.joinChannel(channel, newChannelData.potentialNeighborUniqueIdentity);
         });
+    },
+    addPotentialNeighborToNeighbors(potentialNeighborUniqueIdentity) {
+      axios({
+        url: 'http://127.0.0.1:8000/user/add_neighbor/' + this.user.id,
+        data: {'neighbor_id': potentialNeighborUniqueIdentity},
+        method: 'PUT'
+      })
     },
     getlocation() {
       if (!navigator.geolocation) {
