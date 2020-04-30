@@ -27,6 +27,6 @@ def update_user_location(user_id: str):
 
 
 @USER_BP.route('/nearby/<user_id>', methods=['GET'])
-def get_nearby_users(user_id: str):
-    users = user_domain_logic.get_nearby_users(user_id)
+def get_potential_neighbors(user_id: str):
+    users = user_domain_logic.get_potential_neighbors(user_id)
     return jsonify([user_schema.dump(user) for user in users])

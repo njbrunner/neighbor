@@ -20,3 +20,5 @@ class User(Document):
     location = fields.PointField()
     date_registered = fields.DateField(default=datetime.now())
     email_verified = fields.BooleanField(default=False)
+    neighbors = fields.ListField(fields.ReferenceField('self'))
+    blacklisted_neighbors = fields.ListField(fields.ReferenceField('self'))
