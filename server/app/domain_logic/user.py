@@ -49,9 +49,7 @@ def get_potential_neighbors(user_id: str) -> List[User]:
 
     Returns a list of Users.
     """
-    user = User.objects.get(unique_identity=user_id)
-
-    print(User.objects())
+    user = User.objects.get(id=user_id)
 
     users = User.objects(
         location__near=user.location['coordinates'],
@@ -60,6 +58,4 @@ def get_potential_neighbors(user_id: str) -> List[User]:
         unique_identity__nin=[ neighbor.unique_identity for neighbor in user.neighbors ]
             + [ neighbor.unique_identity for neighbor in user.blacklisted_neighbors ]
     )
-    print(users)
-    print(NEARBY_DISTANCE_SETTING)
     return users

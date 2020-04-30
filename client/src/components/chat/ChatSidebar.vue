@@ -5,6 +5,7 @@
         v-for="(channel, index) in channels"
         :key="index"
         :channel="channel"
+        :user="user"
         @onSelectedChannel="onSelectedChannel">
       </Channel>
     </div>
@@ -22,11 +23,12 @@ export default {
       Channel
     },
     props: {
-      channels: Array
+      channels: Array,
+      user: Object
     },
     methods: {
-      onSelectedChannel(channel) {
-        this.$emit('onSelectedChannel', channel);
+      onSelectedChannel(channelData) {
+        this.$emit('onSelectedChannel', channelData);
       }
     }
 }

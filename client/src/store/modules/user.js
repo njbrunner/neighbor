@@ -78,9 +78,9 @@ const actions = {
             });
         });
     },
-    fetchPotentialNeighbors({ commit }, userId) {
+    fetchPotentialNeighbors({ commit }) {
         axios({
-            url: 'http://127.0.0.1:8000/user/nearby/' + userId,
+            url: 'http://127.0.0.1:8000/user/nearby/' + state.user.id,
             method: 'GET'
         })
         .then(response => {
@@ -104,6 +104,7 @@ const mutations = {
     },
     logout: (state) => {
         state.user = undefined;
+        state.potentialNeighbors = undefined;
     }
 };
 
