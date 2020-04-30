@@ -36,13 +36,12 @@ const routes = [
     }
   },
   {
-    path: '/chat/:user',
+    path: '/chat',
     name: 'Chat',
     component: Chat,
     meta: {
       requiresAuth: true
     },
-    props: true
   }
 ];
 

@@ -1,24 +1,28 @@
 <template>
 <div>
-  <h1 v-if="channel">{{ channel.friendlyName }}</h1>
-  <hr>
-
-  <MessageContainer
-    :messages="channelMessages"
-    :user="user">
-  </MessageContainer>
-
-  <InputContainer
-    @sendMessage="sendMessage">
-  </InputContainer>
-
+  <v-row>
+    <v-col
+      :cols="3">
+      <ChatSidebar
+        :channels="channels"
+        @onSelectedChannel="onSelectedChannel">
+      </ChatSidebar>
+    </v-col>
+    <v-col
+      :cols="9">
+      <MessageContainer
+        :user="user"
+        :selectedChannel="selectedChannel">
+      </MessageContainer>
+    </v-col>
+  </v-row>
 </div>
 </template>
 
 <script>
 const Chat = require('twilio-chat');
+import ChatSidebar from '@/components/chat/ChatSidebar';
 import MessageContainer from '@/components/chat/MessageContainer';
-import InputContainer from '@/components/chat/InputContainer';
 
 export default {
     name: 'Chat',
@@ -26,97 +30,71 @@ export default {
         user: Object
     },
     components: {
-      MessageContainer,
-      InputContainer
+      ChatSidebar,
+      MessageContainer
     },
     data() {
       return {
         chatClient: undefined,
-        channel: undefined,
-        channelUniqueName: 'test',
-        channelFriendlyName: 'Test Channel',
-        channelMessages: undefined
+        // channelUniqueName: 'test',
+        // channelFriendlyName: 'Test Channel',
+        channels: undefined,
+        selectedChannel: undefined
       }
     },
     methods: {
-      doesChannelExist(uniqueName) {
-        this.chatClient.getChannelByUniqueName(uniqueName)
-          .then(channel => {
-            console.log(this.channelFriendlyName + ' exists');
-            this.channel = channel;
-            this.isUserAChannelMemeber();
-          })
-          .catch(() => {
-            console.log('Channel does not yet exist');
-            this.createChannel();
-          })
-      },
-      isUserAChannelMemeber() {
-        this.chatClient.getSubscribedChannels()
-          .then(channels => {
-            if (channels.items != 0) {
-              if (this.channel.uniqueName == channels.items[0].state.uniqueName) {
-                console.log('Already a member of ' + this.channelFriendlyName);
-                this.getChannelMessages()
-              } else {
-                console.log('Not yet a member of ' + this.channelFriendlyName);
-                this.joinChannel(this.channel);
-              }
-            } else {
-              this.joinChannel(this.channel);
-            }
-          });
-      },
-      joinChannel() {
-        this.channel.join()
-          .then((channel) => {
-            console.log('Joined channel: ' + channel.friendlyName);
-            this.getChannelMessages();
-          });
-      },
-      createChannel() {
-        this.chatClient.createChannel({
-          uniqueName: this.channelUniqueName,
-          friendlyName: this.channelFriendlyName
-        })
-          .then(channel => {
-            console.log('Created new channel: ' + channel.friendlyName);
-            this.channel = channel;
-            this.joinChannel();
-          });
-      },
-      getChannelMessages() {
-        this.channel.getMessages()
-          .then(messages => {
-            console.log(messages);
-            this.channel.getMembers()
-              .then(members => {
-                console.log(members)
-                members[0].getUser()
-                  .then(user => console.log(user));
-              });
-            this.channelMessages = messages.items;
-            this.subscribeToNewMessages();
-          });
-      },
-      subscribeToNewMessages() {
-        this.channel.on('messageAdded', (message) => {
-          this.channelMessages.push(message);
-        });
-      },
-      sendMessage(messageText) {
-        this.channel.sendMessage(messageText, {'sender': this.user.name})
-          .then(() => {
-            this.getChannelMessages();
-          });
-      },
+      // doesChannelExist(uniqueName) {
+      //   this.chatClient.getChannelByUniqueName(uniqueName)
+      //     .then(channel => {
+      //       console.log(this.channelFriendlyName + ' exists');
+      //       this.channel = channel;
+      //       this.isUserAChannelMemeber();
+      //     })
+      //     .catch(() => {
+      //       console.log('Channel does not yet exist');
+      //       this.createChannel();
+      //     })
+      // },
+      // isUserAChannelMemeber() {
+      //   this.chatClient.getSubscribedChannels()
+      //     .then(channels => {
+      //       if (channels.items != 0) {
+      //         if (this.channel.uniqueName == channels.items[0].state.uniqueName) {
+      //           console.log('Already a member of ' + this.channelFriendlyName);
+      //           this.getChannelMessages()
+      //         } else {
+      //           console.log('Not yet a member of ' + this.channelFriendlyName);
+      //           this.joinChannel(this.channel);
+      //         }
+      //       } else {
+      //         this.joinChannel(this.channel);
+      //       }
+      //     });
+      // },
+      // joinChannel() {
+      //   this.channel.join()
+      //     .then((channel) => {
+      //       console.log('Joined channel: ' + channel.friendlyName);
+      //       this.getChannelMessages();
+      //     });
+      // },
+      // createChannel() {
+      //   this.chatClient.createChannel({
+      //     uniqueName: this.channelUniqueName,
+      //     friendlyName: this.channelFriendlyName
+      //   })
+      //     .then(channel => {
+      //       console.log('Created new channel: ' + channel.friendlyName);
+      //       this.channel = channel;
+      //       this.joinChannel();
+      //     });
+      // },
       createChatClient() {
-        Chat.Client.create(this.user.auth_token, {'username': 'test'})
+        Chat.Client.create(this.user.auth_token)
         .then((client) => {
-          console.log(client);
           this.chatClient = client;
-          this.subscribeToExpiredToken();
-          this.doesChannelExist(this.channelUniqueName);
+          // this.doesChannelExist(this.channelUniqueName);
+          this.getChannels();
         })
         .catch(error => {
           console.log(error.message);
@@ -126,10 +104,17 @@ export default {
           }
         });
       },
-      subscribeToExpiredToken() {
-        this.chatClient.on('tokenExpired', () => {
-
-        })
+      getChannels() {
+        this.chatClient.getSubscribedChannels()
+          .then(channels => {
+            this.channels = channels.items;
+            this.selectedChannel = this.channels[0];
+            console.log('fetched subscribed channels');
+          })
+      },
+      onSelectedChannel(channel) {
+        console.log('selected channel');
+        this.selectedChannel = channel;
       }
     },
     created() {

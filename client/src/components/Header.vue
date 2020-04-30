@@ -5,7 +5,14 @@
       :src="require('@/assets/images/neighbor_150x50.png')"
       height="50"
       @click="goHome"/>
+
     <v-spacer></v-spacer>
+
+      <v-btn
+        icon
+        @click="goToChat">
+        <v-icon class="primary--text">mdi-chat-outline</v-icon>
+      </v-btn>
 
       <v-menu open-on-hover offset-y v-if="isLoggedIn">
         <template v-slot:activator="{ on }">
@@ -26,6 +33,9 @@
 <script>
 export default {
   name: "Header",
+  props: {
+    user: Object
+  },
   methods: {
     logout() {
       this.$store.dispatch('logout');
@@ -33,6 +43,9 @@ export default {
     },
     goHome() {
       this.$router.push({name: 'Home'});
+    },
+    goToChat() {
+      this.$router.push({name: 'Chat'});
     }
   },
   computed: {
