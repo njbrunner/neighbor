@@ -52,7 +52,15 @@ export default {
           .then(channels => {
             this.channels = channels.items;
             this.selectedChannel = this.channels[0];
+            this.selectedChannelDisplayName = this.getChannelDisplayName(this.channels[0]);
           })
+      },
+      getChannelDisplayName(channel) {
+        let displayNames = channel.attributes.displayNames;
+        if (displayNames[0] == this.user.name) {
+            return displayNames[1];
+        }
+        return displayNames[0]
       },
       onSelectedChannel(channelData) {
         this.selectedChannel = channelData.channel;
