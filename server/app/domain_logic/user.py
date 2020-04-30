@@ -49,7 +49,7 @@ def get_potential_neighbors(user_id: str) -> List[User]:
 
     Returns a list of Users.
     """
-    user = User.objects.get(unique_identity=user_id)
+    user = User.objects.get(id=user_id)
 
     users = User.objects(
         location__near=user.location['coordinates'],
@@ -66,11 +66,11 @@ def get_neighbors(user_id: str):
     user = User.objects.get(unique_identity=user_id)
     return user.neighbors
 
-    
+
 def add_neighbor(current_user_id: str, neighbor_id: str) -> None:
     """
     Adds a user to the tracked neighbors so they don't appear in potential neighbor queries.
-    
+
     Note that this is unidirectional and it does not update the neighbor to be joined with this user.
     """
     user = User.objects.get(unique_identity=current_user_id)
@@ -78,11 +78,11 @@ def add_neighbor(current_user_id: str, neighbor_id: str) -> None:
 
     user.update(add_to_set__neighbors=neighbor)
 
-    
+
 def black_list_neighbor(current_user_id: str, neighbor_id: str) -> None:
     """
     Black lists a neighbor from the tracked neighbors so they don't appear in potential neighbor queries.
-    
+
     Note that this is unidirectional and it does not update the neighbor to be joined with this user.
     """
     user = User.objects.get(unique_identity=current_user_id)

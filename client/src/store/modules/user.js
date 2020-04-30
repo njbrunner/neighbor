@@ -1,12 +1,14 @@
 import axios from 'axios';
 
 const state = {
-    user: undefined
+    user: undefined,
+    potentialNeighbors: undefined
 };
 
 const getters = {
     getUser: state => state.user,
-    isLoggedIn: state => !!state.user
+    isLoggedIn: state => !!state.user,
+    getPotentialNeighbors: state => state.potentialNeighbors
 };
 
 const actions = {
@@ -69,11 +71,23 @@ const actions = {
             })
             .then(response => {
                 commit('updateUser', response.data);
-                resolve(response)
+                resolve(response);
             })
             .catch(error => {
                 reject(error);
-            })
+            });
+        });
+    },
+    fetchPotentialNeighbors({ commit }) {
+        axios({
+            url: 'http://127.0.0.1:8000/user/nearby/' + state.user.id,
+            method: 'GET'
+        })
+        .then(response => {
+            commit('updatePotentialNeighbors', response.data);
+        })
+        .catch(error => {
+            console.log(error);
         });
     }
 };
@@ -85,8 +99,12 @@ const mutations = {
             localStorage.setItem('user', JSON.stringify(userData));
         }
     },
+    updatePotentialNeighbors(state, potentialNeighbors) {
+        state.potentialNeighbors = potentialNeighbors;
+    },
     logout: (state) => {
         state.user = undefined;
+        state.potentialNeighbors = undefined;
     }
 };
 
