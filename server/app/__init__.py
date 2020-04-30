@@ -31,6 +31,7 @@ class DevelopmentConfig(object):
     API_KEY = os.environ['TWILIO_API_KEY']
     API_SECRET = os.environ['TWILIO_API_SECRET']
     CHAT_SERVICE_SID = os.environ.get('TWILIO_CHAT_SERVICE_SID', None)
+    AUTH_TOKEN = os.environ['TWILIO_AUTH_TOKEN']
 
 
 def create_app(test_config=None):
