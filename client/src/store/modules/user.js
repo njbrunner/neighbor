@@ -1,12 +1,20 @@
 import axios from 'axios';
+import jwt from 'jsonwebtoken';
+import router from '../../router';
+import store from '../../store';
+
 
 const state = {
-    user: undefined
+    user: undefined,
+    token: undefined,
+    refresh: undefined
 };
 
 const getters = {
     getUser: state => state.user,
-    isLoggedIn: state => !!state.user
+    isLoggedIn: state => !!state.user,
+    getToken: state => state.token,
+    getRefreshToken: state => state.refreshToken,
 };
 
 const actions = {
@@ -34,7 +42,9 @@ const actions = {
                 method: 'POST'
             })
             .then(response => {
-                commit('updateUser', response.data);
+                commit('updateUser', response.data.user);
+                commit('updateRefresh', response.data.refresh);
+                commit('updateToken', response.data.token);
                 resolve(response);
             })
             .catch(error => {
@@ -62,8 +72,10 @@ const actions = {
             'longitude': userLocationData.longitude
         }
         return new Promise((resolve, reject) => {
+          console.log("User may be undefined: " + state.user.id);
+          console.log("User may be undefined: " + userLocationData.userId);
             axios({
-                url: 'http://127.0.0.1:8000/user/' + userLocationData.userId,
+                url: 'http://127.0.0.1:8000/user/' + state.user.id,
                 data: locationData,
                 method: "PATCH"
             })
@@ -87,8 +99,90 @@ const mutations = {
     },
     logout: (state) => {
         state.user = undefined;
+    },
+    updateToken: (state, token) => {
+        console.log("UPDATED JWT TOKEN " + token);
+        state.token = token;
+        updateAuthBearer();
+    },
+    updateRefresh: (state, refresh) => {
+        console.log("UPDATED REFRESH TOKEN " + refresh);
+        state.refresh = refresh;
     }
 };
+
+
+var authTokenRequest = null;
+
+function getAuthToken () {
+  // if the current store token expires soon
+  console.log("logging token" + jwt.decode(store.getters['getToken']).exp - 240 <= (Date.now() / 1000).toFixed(0))
+  if (jwt.decode(store.getters['getToken']).exp - 240 <= (Date.now() / 1000).toFixed(0)) {
+  // if not already requesting a token
+  if (authTokenRequest === null) {
+    console.log("in refresh token block");
+    authTokenRequest = //axios.post('/refresh-token', {}, { withCredentials: true })
+      axios({
+          url: 'http://127.0.0.1:8000/refresh-token',
+          data: {},
+          method: 'GET',
+          config: { withCredentials: true }
+      })
+      .then(response => {
+        // request complete and store
+        resetAuthTokenRequest()
+        store.commit('updateRefresh', response.data.access_token)
+        return response.data.access_token
+      })
+    }
+    return authTokenRequest
+  }
+  return store.getters['getToken']
+}
+
+// tokenRequest dirty bit reseter
+function resetAuthTokenRequest () {
+  authTokenRequest = null
+}
+
+function updateAuthBearer () {
+  // Axios Intercept Requests
+  axios.interceptors.request.use(async function (config) {
+    // If not one of these specific pages that doesn't need a token, use method to get the current token or request a new one.  Otherwise, use current token (possibly none)
+    if (!config.url.includes('login') && !config.url.includes('refresh') && !config.url.includes('forgot_password') && !config.url.includes('reset_password') && !config.url.includes('activate')) {
+      config.headers['Authorization'] = 'Bearer ' + await getAuthToken()
+    } else {
+      config.headers['Authorization'] = 'Bearer ' + store.getters['getToken']
+    }
+    return config
+  }, function (error) {
+    console.log("Error in interceptor" + error);
+    return Promise.reject(error)
+  })
+  
+  axios.interceptors.response.use(function (config) {
+    return config
+  }, function (error) {
+    console.log("Error in interceptor" + error);
+    // Prevent endless redirects (login is where you should end up)
+    if (error.request !== undefined) {
+      if (error.request.responseURL.includes('login')) {
+        return Promise.reject(error)
+      }
+    }
+  
+    // If you can't refresh your token or you are sent Unauthorized on any request, logout and go to login
+    if (error.request !== undefined && (error.request.responseURL.includes('refresh') || error.request.status === 401 && error.config.__isRetryRequest)) {
+      store.dispatch('logout')
+      router.push({name: 'Login'})
+    } else if (error.request !== undefined && error.request.status === 401) {
+      error.config.__isRetryRequest = true
+      return axios.request(error.config)
+    }
+    return Promise.reject(error)
+  })
+}
+
 
 export default {
     state,

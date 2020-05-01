@@ -36,7 +36,7 @@ def login(data: Dict[str, str]) -> User:
 
 def update_user_location(user_id: str, data: Dict[str, str]) -> User:
     """Update user location."""
-    user = User.objects.get(id=user_id)
+    user = get_user(user_id)
     user.update(location={'type': 'Point', 'coordinates': [data['longitude'], data['latitude']]})
     user.location_identified = True
     user.save()
@@ -49,7 +49,7 @@ def get_potential_neighbors(user_id: str) -> List[User]:
 
     Returns a list of Users.
     """
-    user = User.objects.get(unique_identity=user_id)
+    user = get_user(user_id)
 
     print(User.objects())
 
@@ -63,3 +63,6 @@ def get_potential_neighbors(user_id: str) -> List[User]:
     print(users)
     print(NEARBY_DISTANCE_SETTING)
     return users
+
+def get_user(user_id: str) -> User:
+    return User.objects.get(id=user_id)
