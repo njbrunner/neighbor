@@ -2,8 +2,6 @@
 
 import json
 
-import app.domain_logic.user as user_domain_logic
-from app.models.role import Role
 from app.models.user import User
 
 
@@ -31,7 +29,7 @@ def test_add_neighbor(user, user2, login, client):
     """Should return user 2."""
     client.put(
         f'user/add_neighbor/{user.id}',
-        json=dict(neighbor_id=user2.unique_identity),
+        json=dict(neighbor_id=str(user2.id)),
         content_type="application/json"
     )
 
@@ -47,13 +45,13 @@ def test_remove_neighbor(user, user2, login, client):
     """Should not return results (user 4 is also a provider and should not be returned)."""
     client.put(
         f'user/add_neighbor/{user.id}',
-        json=dict(neighbor_id=user2.unique_identity),
+        json=dict(neighbor_id=str(user2.id)),
         content_type="application/json"
     )
 
     client.put(
         f'user/remove_neighbor/{user.id}',
-        json=dict(neighbor_id=user2.unique_identity),
+        json=dict(neighbor_id=str(user2.id)),
         content_type="application/json"
     )
 

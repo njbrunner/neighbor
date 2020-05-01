@@ -17,7 +17,7 @@ def generate_access_token(identity: str):
     return token.to_jwt().decode()
 
 
-def create_twilio_user(unique_identity: str, name: str):
+def create_twilio_user(user_id: str, name: str):
     """Create a user with the Twilio Client."""
     twilio_client = Client(
         current_app.config['ACCOUNT_SID'],
@@ -25,7 +25,7 @@ def create_twilio_user(unique_identity: str, name: str):
     )
 
     twilio_client.chat.services(current_app.config['CHAT_SERVICE_SID']).users.create(
-        identity=unique_identity,
+        identity=user_id,
         friendly_name=name,
         attributes=json.dumps({
             'name': name

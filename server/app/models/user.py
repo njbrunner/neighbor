@@ -10,12 +10,11 @@ from app.models import Role
 class User(Document):
     """User database model."""
 
-    # required
+    id = fields.ObjectId()
     email = fields.EmailField(unique=True, required=True)
     name = fields.StringField(required=True)
-    unique_identity = fields.StringField(unique=True, required=True)
     hashed_password = fields.StringField(required=True)
-    auth_token = fields.StringField(unique=True, required=False)
+    twilio_token = fields.StringField(unique=True, required=False)
     role = fields.ReferenceField(Role, required=True)
     location = fields.PointField()
     location_identified = fields.BooleanField(default=False, required=True)

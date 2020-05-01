@@ -7,7 +7,7 @@ from flask_jwt_extended import (
 from http import HTTPStatus
 
 from app.domain_logic import user_domain_logic
-from app.schemas.user import user_schema
+from app.schemas.user import user_schema, login_schema
 from app.utilities import create_token, create_token_for_refresh
 
 USER_BP = Blueprint('user_bp', __name__, url_prefix='/user')
@@ -15,7 +15,8 @@ USER_BP = Blueprint('user_bp', __name__, url_prefix='/user')
 
 @USER_BP.route('/signup', methods=["POST"])
 def signup():
-    user = user_domain_logic.signup(request.json)
+    user_data = user_schema.load(request.json)
+    user = user_domain_logic.signup(user_data)
     access_token = create_token(user)
     refresh_token = create_token_for_refresh(user)
     return jsonify(token=access_token, refresh=refresh_token, user=user_schema.dump(user))
@@ -23,7 +24,8 @@ def signup():
 
 @USER_BP.route('/login', methods=["POST"])
 def login():
-    user = user_domain_logic.login(request.json)
+    user_data = login_schema.load(request.json)
+    user = user_domain_logic.login(user_data)
     access_token = create_token(user)
     refresh_token = create_token_for_refresh(user)
     return jsonify(token=access_token, refresh=refresh_token, user=user_schema.dump(user))
