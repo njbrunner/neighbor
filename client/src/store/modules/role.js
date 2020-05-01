@@ -12,7 +12,7 @@ const actions = {
     getRoles({commit}) {
         return new Promise((resolve, reject) => {
             axios({
-                url: 'http://127.0.0.1:8000/role/',
+                url: 'https://covid-19-hackathon-app.herokuapp.com/role/',
                 method: 'GET'
             })
             .then(response => {

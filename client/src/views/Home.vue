@@ -79,7 +79,7 @@ export default {
     },
     addPotentialNeighborToNeighbors(potentialNeighborUniqueIdentity) {
       axios({
-        url: 'http://127.0.0.1:8000/user/add_neighbor/' + this.user.id,
+        url: 'https://covid-19-hackathon-app.herokuapp.com/user/add_neighbor/' + this.user.id,
         data: {'neighbor_id': potentialNeighborUniqueIdentity},
         method: 'PUT'
       })

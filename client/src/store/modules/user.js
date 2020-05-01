@@ -23,7 +23,7 @@ const actions = {
     signup({ commit }, userData) {
         return new Promise((resolve, reject) => {
             axios({
-                url: 'http://127.0.0.1:8000/user/signup',
+                url: 'https://covid-19-hackathon-app.herokuapp.com/user/signup',
                 data: userData,
                 method: 'POST'
             })
@@ -41,7 +41,7 @@ const actions = {
     login({ commit }, loginData) {
         return new Promise((resolve, reject) => {
             axios({
-                url: 'http://127.0.0.1:8000/user/login',
+                url: 'https://covid-19-hackathon-app.herokuapp.com/user/login',
                 data: loginData,
                 method: 'POST'
             })
@@ -77,7 +77,7 @@ const actions = {
         }
         return new Promise((resolve, reject) => {
             axios({
-                url: 'http://127.0.0.1:8000/user/' + state.user.id,
+                url: 'https://covid-19-hackathon-app.herokuapp.com/user/' + state.user.id,
                 data: locationData,
                 method: "PATCH"
             })
@@ -92,7 +92,7 @@ const actions = {
     },
     fetchPotentialNeighbors({ commit }) {
         axios({
-            url: 'http://127.0.0.1:8000/user/nearby/' + state.user.id,
+            url: 'https://covid-19-hackathon-app.herokuapp.com/user/nearby/' + state.user.id,
             method: 'GET'
         })
         .then(response => {
@@ -138,7 +138,7 @@ function getAuthToken () {
     console.log("in refresh token block");
     authTokenRequest =
       axios({
-          url: 'http://127.0.0.1:8000/refresh-token',
+          url: 'https://covid-19-hackathon-app.herokuapp.com/refresh-token',
           data: {},
           method: 'GET',
           config: { withCredentials: true }
@@ -175,7 +175,7 @@ function updateAuthBearer () {
     console.log("Error in interceptor" + error);
     return Promise.reject(error)
   })
-  
+
   axios.interceptors.response.use(function (config) {
     return config
   }, function (error) {
@@ -186,7 +186,7 @@ function updateAuthBearer () {
         return Promise.reject(error)
       }
     }
-  
+
     // If you can't refresh your token or you are sent Unauthorized on any request, logout and go to login
     if (error.request !== undefined && (error.request.responseURL.includes('refresh') || error.request.status === 401 && error.config.__isRetryRequest)) {
       store.dispatch('logout')
