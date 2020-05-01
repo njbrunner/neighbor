@@ -9,6 +9,7 @@
 <script>
 import FormContainer from '@/components/landingPage/FormContainer';
 import LoginForm from '@/components/landingPage/LoginForm';
+import axios from 'axios';
 
 export default {
   name: "Login",

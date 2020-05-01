@@ -9,10 +9,12 @@ from flask_mongoengine import MongoEngine
 from flask_pymongo import PyMongo
 
 from app.utilities import create_default_roles
+from app.domain_logic import user_domain_logic
+from app.models import User
 
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
-
+jwt_manager = JWTManager()
 
 class DevelopmentConfig(object):
     DEBUG = True
@@ -63,7 +65,7 @@ def create_app(test_config=None):
 def initialize_extensions(app):
     """Initialize all flask extensions."""
     CORS(app)
-    JWTManager(app)
+    jwt_manager.init_app(app)
     PyMongo(app)
     MongoEngine(app)
 
@@ -79,3 +81,14 @@ def register_blueprints(app):
 def initialize_database():
     """Initialize database."""
     create_default_roles()
+
+    
+@jwt_manager.user_loader_callback_loader
+def load_user(user_id: str) -> User:
+    """Return the current JWT user."""
+    return user_domain_logic.get_user(user_id)
+
+
+__all__ = [
+    "jwt_manager"
+]

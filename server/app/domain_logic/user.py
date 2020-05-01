@@ -39,7 +39,7 @@ def login(user_data: LoginSchema) -> User:
 
 def update_user_location(user_id: str, data: Dict[str, str]) -> User:
     """Update user location."""
-    user = User.objects.get(id=user_id)
+    user = get_user(user_id)
     # TODO: Test if you need .update
     user.update(location={'type': 'Point', 'coordinates': [data['longitude'], data['latitude']]})
     user.location_identified = True
@@ -53,7 +53,7 @@ def get_potential_neighbors(user_id: str) -> List[User]:
 
     Returns a list of Users.
     """
-    user = User.objects.get(id=user_id)
+    user = get_user(user_id)
 
     users = User.objects(
         location__near=user.location['coordinates'],
@@ -63,6 +63,10 @@ def get_potential_neighbors(user_id: str) -> List[User]:
         + [neighbor.id for neighbor in user.blacklisted_neighbors]
     )
     return users
+
+
+def get_user(user_id: str) -> User:
+    return User.objects.get(id=user_id)
 
 
 def get_neighbors(user_id: str):
