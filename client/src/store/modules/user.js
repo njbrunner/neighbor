@@ -28,7 +28,9 @@ const actions = {
                 method: 'POST'
             })
             .then(response => {
-                commit('updateUser', response.data);
+                commit('updateUser', response.data.user);
+                commit('updateRefresh', response.data.refresh);
+                commit('updateToken', response.data.token);
                 resolve(response);
             })
             .catch(error => {
@@ -74,8 +76,6 @@ const actions = {
             'longitude': userLocationData.longitude
         }
         return new Promise((resolve, reject) => {
-          console.log("User may be undefined: " + state.user.id);
-          console.log("User may be undefined: " + userLocationData.userId);
             axios({
                 url: 'http://127.0.0.1:8000/user/' + state.user.id,
                 data: locationData,
@@ -119,12 +119,10 @@ const mutations = {
         state.potentialNeighbors = undefined;
     },
     updateToken: (state, token) => {
-        console.log("UPDATED JWT TOKEN " + token);
         state.token = token;
         updateAuthBearer();
     },
     updateRefresh: (state, refresh) => {
-        console.log("UPDATED REFRESH TOKEN " + refresh);
         state.refresh = refresh;
     }
 };
@@ -134,7 +132,6 @@ var authTokenRequest = null;
 
 function getAuthToken () {
   // if the current store token expires soon
-  console.log("logging token" + jwt.decode(store.getters['getToken']).exp - 240 <= (Date.now() / 1000).toFixed(0))
   if (jwt.decode(store.getters['getToken']).exp - 240 <= (Date.now() / 1000).toFixed(0)) {
   // if not already requesting a token
   if (authTokenRequest === null) {
@@ -167,10 +164,11 @@ function updateAuthBearer () {
   // Axios Intercept Requests
   axios.interceptors.request.use(async function (config) {
     // If not one of these specific pages that doesn't need a token, use method to get the current token or request a new one.  Otherwise, use current token (possibly none)
-    if (!config.url.includes('login') && !config.url.includes('refresh') && !config.url.includes('forgot_password') && !config.url.includes('reset_password') && !config.url.includes('activate')) {
+    if (!config.url.includes('login') && !config.url.includes('refresh-token') && !config.url.includes('signup')) {
       config.headers['Authorization'] = 'Bearer ' + await getAuthToken()
     } else {
-      config.headers['Authorization'] = 'Bearer ' + store.getters['getToken']
+      console.log("Used refresh token for " + config.url);
+      config.headers['Authorization'] = 'Bearer ' + store.getters['getRefreshToken']
     }
     return config
   }, function (error) {
