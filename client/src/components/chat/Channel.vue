@@ -1,6 +1,12 @@
 <template>
-  <div class="channel-wrapper" @click="selectChannel">
-    <div class="channel">{{ channelDisplayName }}</div>
+  <div
+    class="channel-wrapper"
+    @click="selectChannel"
+    :class="{activeChannel: isActiveChannel}">
+    <div
+      class="channel"
+      :class="{newChannel: isNewChannel}">{{ channelDisplayName }}
+    </div>
   </div>
 </template>
 
@@ -9,7 +15,8 @@ export default {
   name: "Channel",
   props: {
     channel: Object,
-    user: Object
+    user: Object,
+    selectedChannel: Object
   },
   computed: {
     channelDisplayName() {
@@ -18,17 +25,23 @@ export default {
           return displayNames[1];
       }
       return displayNames[0]
+    },
+    newInvitations() {
+      return this.$store.getters.getNewInvitations;
+    },
+    isNewChannel() {
+      return this.newInvitations.includes(this.channel.uniqueName);
+    },
+    isActiveChannel() {
+      if (this.selectedChannel) {
+        return this.selectedChannel == this.channel;
+      }
+      return false;
     }
   },
   methods: {
     selectChannel() {
-      this.$emit(
-        "onSelectedChannel",
-        {
-          'channel': this.channel,
-          'channelDisplayName': this.channelDisplayName
-        }
-      );
+      this.$emit("onSelectedChannel", this.channel);
     },
   }
 };
@@ -45,7 +58,14 @@ export default {
 }
 
 .channel {
-  border-right: 4px solid red;
   padding: 15px;
+}
+.newChannel {
+  border-right: 4px solid red;
+}
+.activeChannel {
+  border: solid 1px red;
+  font-weight: bold;
+  color: red;
 }
 </style>

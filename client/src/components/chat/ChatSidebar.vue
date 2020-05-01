@@ -6,6 +6,7 @@
         :key="index"
         :channel="channel"
         :user="user"
+        :selectedChannel="selectedChannel"
         @onSelectedChannel="onSelectedChannel">
       </Channel>
     </div>
@@ -26,11 +27,44 @@ export default {
       channels: Array,
       user: Object
     },
-    methods: {
-      onSelectedChannel(channelData) {
-        this.$emit('onSelectedChannel', channelData);
+    watch: {
+      channels() {
+        if (this.channels != undefined && this.selectedChannel == undefined) {
+          this.onSelectedChannel(this.channels[0]);
+        }
       }
-    }
+    },
+    data() {
+      return {
+        selectedChannel: undefined
+      }
+    },
+    computed: {
+      newInvitations() {
+        return this.$store.getters.getNewInvitations;
+      }
+    },
+    methods: {
+      onSelectedChannel(channel) {
+        if(this.newInvitations.includes(channel.uniqueName)){
+          this.$store.commit('removeNewInvitation', channel.uniqueName);
+        }
+
+        let channelData = {
+          channel: channel,
+          channelDisplayName: this.channelDisplayName(channel)
+        };
+        this.selectedChannel = channel;
+        this.$emit('onSelectedChannel', channelData);
+      },
+      channelDisplayName(channel) {
+        let displayNames = channel.attributes.displayNames;
+        if (displayNames[0] == this.user.name) {
+            return displayNames[1];
+        }
+        return displayNames[0]
+      },
+    },
 }
 </script>
 
