@@ -24,10 +24,16 @@ class DevelopmentConfig(object):
     JWT_SECRET_KEY = "enter_secret_here"
 
     # RetryableWrites are unsupported for mLab MongoDB
-    MONGO_URI = "mongodb://localhost:27017/covid-19?retryWrites=false"
+    MONGO_URI = os.environ.get('MONGODB_URI')
+    if MONGO_URI:
+        MONGO_URI = MONGO_URI + "?retryWrites=false"
     MONGODB_SETTINGS = {
         'host': MONGO_URI
     }
+    # MONGO_URI = "mongodb://localhost:27017/covid-19?retryWrites=false"
+    # MONGODB_SETTINGS = {
+    #     'host': MONGO_URI
+    # }
 
     ACCOUNT_SID = os.environ['TWILIO_ACCOUNT_SID']
     API_KEY = os.environ['TWILIO_API_KEY']
@@ -82,7 +88,7 @@ def initialize_database():
     """Initialize database."""
     create_default_roles()
 
-    
+
 @jwt_manager.user_loader_callback_loader
 def load_user(user_id: str) -> User:
     """Return the current JWT user."""
