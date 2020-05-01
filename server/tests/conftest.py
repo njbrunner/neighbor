@@ -3,12 +3,10 @@
 from flask import url_for
 from flask.testing import FlaskClient
 import json
-from mongoengine import GeoJsonBaseField
 import pytest
 from werkzeug.security import generate_password_hash
 
 import app
-import app.domain_logic.user as user_domain_logic
 from app.models.role import Role
 from app.models.user import User
 
@@ -19,9 +17,10 @@ def start_app():
     application = app.create_app()
     yield application
 
+
 @pytest.fixture
 def client(start_app):
-    """Provides a test client for integration calls."""
+    """Provide a test client for integration calls."""
     with start_app.test_request_context():
         with start_app.test_client() as client:
             yield client
@@ -29,15 +28,18 @@ def client(start_app):
 
 USER_PASSWORD = 'password'
 
+
 @pytest.fixture
 def provider():
     role = Role.objects.get(value='provider')
     yield role
 
+
 @pytest.fixture
 def seeker():
     role = Role.objects.get(value='seeker')
     yield role
+
 
 @pytest.fixture
 def user(seeker):
@@ -49,22 +51,23 @@ def user(seeker):
     latitude = -89.99999
     longitude = -179.00001
     user = User(
-        email = email, 
-        name = 'Spicy Pete',
-        unique_identity = '1234',
-        hashed_password = generate_password_hash(USER_PASSWORD),
-        email_verified = True,
-        auth_token = email,
-        role = seeker,
-        location = {'type': 'Point', 'coordinates': [longitude, latitude]}
-        )
+        email=email,
+        name='Spicy Pete',
+        hashed_password=generate_password_hash(USER_PASSWORD),
+        email_verified=True,
+        twilio_token=email,
+        role=seeker,
+        location={'type': 'Point', 'coordinates': [longitude, latitude]}
+    )
     user.save()
     yield user
     user.delete()
 
+
 @pytest.fixture
 def seeker_user(user):
     yield user
+
 
 @pytest.fixture
 def user2(provider):
@@ -76,22 +79,23 @@ def user2(provider):
     latitude = -89.99997 # basically the south pole also
     longitude = -100.00001
     user = User(
-        email = email, 
-        name = 'Max the doggo',
-        unique_identity = '12345',
-        hashed_password = '1234567890ABCDEF',
-        email_verified = True,
-        auth_token = email,
-        role = provider,
-        location = {'type': 'Point', 'coordinates': [longitude, latitude]}
-        )
+        email=email,
+        name='Max the doggo',
+        hashed_password='1234567890ABCDEF',
+        email_verified=True,
+        twilio_token=email,
+        role=provider,
+        location={'type': 'Point', 'coordinates': [longitude, latitude]}
+    )
     user.save()
     yield user
     user.delete()
 
+
 @pytest.fixture
 def provider_user(user2):
     yield user2
+
 
 @pytest.fixture
 def user3(provider):
@@ -103,18 +107,18 @@ def user3(provider):
     latitude = 0.00002
     longitude = 0.00001
     user = User(
-        email = email, 
-        name = 'Claire',
-        unique_identity = '123456',
-        hashed_password = '1234567890ABCDEF',
-        email_verified = True,
-        auth_token = email,
-        role = provider,
-        location = {'type': 'Point', 'coordinates': [longitude, latitude]}
-        )
+        email=email,
+        name='Claire',
+        hashed_password='1234567890ABCDEF',
+        email_verified=True,
+        twilio_token=email,
+        role=provider,
+        location={'type': 'Point', 'coordinates': [longitude, latitude]}
+    )
     user.save()
     yield user
     user.delete()
+
 
 @pytest.fixture
 def user4(provider):
@@ -126,18 +130,18 @@ def user4(provider):
     latitude = 0.00001
     longitude = 0.00001
     user = User(
-        email = email, 
-        name = 'Steve',
-        unique_identity = '1234567',
-        hashed_password = '1234567890ABCDEF',
-        email_verified = True,
-        auth_token = email,
-        role = provider,
-        location = {'type': 'Point', 'coordinates': [longitude, latitude]}
-        )
+        email=email,
+        name='Steve',
+        hashed_password='1234567890ABCDEF',
+        email_verified=True,
+        twilio_token=email,
+        role=provider,
+        location={'type': 'Point', 'coordinates': [longitude, latitude]}
+    )
     user.save()
     yield user
     user.delete()
+
 
 @pytest.fixture
 def login(start_app, client: FlaskClient, user: User):

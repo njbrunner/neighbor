@@ -4,20 +4,22 @@ from flask import Blueprint, jsonify, request
 from http import HTTPStatus
 
 from app.domain_logic import user_domain_logic
-from app.schemas.user import user_schema
+from app.schemas.user import user_schema, login_schema
 
 USER_BP = Blueprint('user_bp', __name__, url_prefix='/user')
 
 
 @USER_BP.route('/signup', methods=["POST"])
 def signup():
-    user = user_domain_logic.signup(request.json)
+    user_data = user_schema.load(request.json)
+    user = user_domain_logic.signup(user_data)
     return user_schema.dump(user)
 
 
 @USER_BP.route('/login', methods=["POST"])
 def login():
-    user = user_domain_logic.login(request.json)
+    user_data = login_schema.load(request.json)
+    user = user_domain_logic.login(user_data)
     return user_schema.dump(user)
 
 

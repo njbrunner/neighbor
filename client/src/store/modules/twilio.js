@@ -9,8 +9,8 @@ const getters = {
 };
 
 const actions = {
-  createChatClient({ commit }, auth_token) {
-    Chat.Client.create(auth_token)
+  createChatClient({ commit }, twilio_token) {
+    Chat.Client.create(twilio_token)
       .then(client => {
         client.on('channelInvited', channel => channel.join());
         commit('updateChatClient', client);
