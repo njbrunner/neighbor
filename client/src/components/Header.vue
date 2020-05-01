@@ -1,5 +1,10 @@
 <template>
-  <v-app-bar app light id="appBar" ref="appBar">
+  <v-app-bar
+    app
+    light
+    id="appBar"
+    ref="appBar"
+    v-if="isLoggedIn">
     <img
       class="mr-3 pointer"
       :src="require('@/assets/images/neighbor_150x50.png')"
@@ -8,13 +13,22 @@
 
     <v-spacer></v-spacer>
 
-      <v-btn
-        icon
-        @click="goToChat">
-        <v-icon class="primary--text">mdi-chat-outline</v-icon>
-      </v-btn>
 
-      <v-menu open-on-hover offset-y v-if="isLoggedIn">
+        <v-btn
+          icon
+          @click="goToChat">
+          <v-badge
+            :content="newInvitations"
+            :value="newInvitations"
+            overlap>
+            <v-icon
+              class="primary--text">
+              mdi-chat-outline
+            </v-icon>
+          </v-badge>
+        </v-btn>
+
+      <v-menu open-on-hover offset-y>
         <template v-slot:activator="{ on }">
           <v-btn icon v-on="on">
             <v-icon class="primary--text">mdi-account-outline</v-icon>
@@ -51,6 +65,9 @@ export default {
   computed: {
     isLoggedIn() {
       return this.$store.getters.isLoggedIn;
+    },
+    newInvitations() {
+      return this.$store.getters.getNewInvitations.length;
     }
   },
 };
