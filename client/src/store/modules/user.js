@@ -164,7 +164,9 @@ function updateAuthBearer () {
   // Axios Intercept Requests
   axios.interceptors.request.use(async function (config) {
     // If not one of these specific pages that doesn't need a token, use method to get the current token or request a new one.  Otherwise, use current token (possibly none)
-    if (!config.url.includes('login') && !config.url.includes('refresh-token') && !config.url.includes('signup')) {
+    if (config.url.includes('twilio')){
+      config.headers['Authorization'] = 'Bearer ' + store.getters['getUser'].twilio_token
+    } else if (!config.url.includes('login') && !config.url.includes('refresh-token') && !config.url.includes('signup')) {
       config.headers['Authorization'] = 'Bearer ' + await getAuthToken()
     } else {
       console.log("Used refresh token for " + config.url);
