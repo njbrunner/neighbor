@@ -77,7 +77,7 @@ const actions = {
         }
         return new Promise((resolve, reject) => {
             axios({
-                url: 'http://127.0.0.1:8000/user/' + state.user.id,
+                url: 'http://127.0.0.1:8000/user/',
                 data: locationData,
                 method: "PATCH"
             })
@@ -92,7 +92,7 @@ const actions = {
     },
     fetchPotentialNeighbors({ commit }) {
         axios({
-            url: 'http://127.0.0.1:8000/user/nearby/' + state.user.id,
+            url: 'http://127.0.0.1:8000/user/nearby/',
             method: 'GET'
         })
         .then(response => {
