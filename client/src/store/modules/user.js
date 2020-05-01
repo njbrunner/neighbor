@@ -136,7 +136,7 @@ function getAuthToken () {
   // if not already requesting a token
   if (authTokenRequest === null) {
     console.log("in refresh token block");
-    authTokenRequest = //axios.post('/refresh-token', {}, { withCredentials: true })
+    authTokenRequest =
       axios({
           url: 'http://127.0.0.1:8000/refresh-token',
           data: {},

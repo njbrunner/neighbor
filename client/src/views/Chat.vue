@@ -51,8 +51,6 @@ export default {
         this.chatClient.getSubscribedChannels()
           .then(channels => {
             this.channels = channels.items;
-            this.selectedChannel = this.channels[0];
-            this.selectedChannelDisplayName = this.getChannelDisplayName(this.channels[0]);
           })
       },
       getChannelDisplayName(channel) {
