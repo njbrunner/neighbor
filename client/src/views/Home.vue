@@ -26,11 +26,6 @@ export default {
   props: {
     user: Object
   },
-  data() {
-    return {
-      chatUser: undefined
-    }
-  },
   computed: {
     potentialNeighbors() {
       return this.$store.getters.getPotentialNeighbors;
@@ -137,8 +132,8 @@ export default {
       this.getlocation();
     } else {
       this.$store.dispatch('fetchPotentialNeighbors');
-      this.$store.dispatch('createChatClient', this.user.auth_token);
     }
+    this.$store.dispatch('createChatClient', this.user.twilio_token);
   },
   beforeUpdate() {
     this.checkLocation();

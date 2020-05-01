@@ -20,7 +20,7 @@ export default {
   },
   computed: {
     isMessageOwned() {
-      return (this.message.author == this.user.unique_identity)
+      return (this.message.author == this.user.id)
     }
   }
 };

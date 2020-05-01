@@ -21,10 +21,10 @@ export default {
     },
     computed: {
       uniqueChannelName() {
-        if (this.user.unique_identity < this.potentialNeighbor.unique_identity) {
-          return this.user.unique_identity + '_' + this.potentialNeighbor.unique_identity;
+        if (this.user.id < this.potentialNeighbor.id) {
+          return this.user.id + '_' + this.potentialNeighbor.id;
         } else {
-          return this.potentialNeighbor.unique_identity + '_' + this.user.unique_identity;
+          return this.potentialNeighbor.id + '_' + this.user.id;
         }
       }
     },
@@ -34,7 +34,7 @@ export default {
           'onCreateChat',
           {
             'uniqueChannelName': this.uniqueChannelName,
-            'potentialNeighborUniqueIdentity': this.potentialNeighbor.unique_identity,
+            'potentialNeighborUniqueIdentity': this.potentialNeighbor.id,
             'potentialNeighborName': this.potentialNeighbor.name
           }
         );

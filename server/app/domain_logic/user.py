@@ -1,5 +1,4 @@
 from typing import Dict, List
-from bson import ObjectId
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -16,12 +15,12 @@ def signup(user_data: UserSchema) -> User:
     new_user_password = user_data.pop('password')
     user_data['hashed_password'] = generate_password_hash(new_user_password)
     new_user = User(**user_data)
-
+    new_user.save()
     new_user.twilio_token = generate_access_token(identity=str(new_user.id))
     new_user.save()
 
     # Create Twilio user
-    create_twilio_user(new_user.id, new_user.name)
+    create_twilio_user(str(new_user.id), new_user.name)
 
     return new_user
 
