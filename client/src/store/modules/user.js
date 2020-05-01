@@ -7,7 +7,8 @@ import store from '../../store';
 const state = {
     user: undefined,
     token: undefined,
-    refresh: undefined
+    refresh: undefined,
+    potentialNeighbors: undefined
 };
 
 const getters = {
@@ -15,6 +16,7 @@ const getters = {
     isLoggedIn: state => !!state.user,
     getToken: state => state.token,
     getRefreshToken: state => state.refreshToken,
+    getPotentialNeighbors: state => state.potentialNeighbors
 };
 
 const actions = {
@@ -81,11 +83,23 @@ const actions = {
             })
             .then(response => {
                 commit('updateUser', response.data);
-                resolve(response)
+                resolve(response);
             })
             .catch(error => {
                 reject(error);
-            })
+            });
+        });
+    },
+    fetchPotentialNeighbors({ commit }) {
+        axios({
+            url: 'http://127.0.0.1:8000/user/nearby/' + state.user.id,
+            method: 'GET'
+        })
+        .then(response => {
+            commit('updatePotentialNeighbors', response.data);
+        })
+        .catch(error => {
+            console.log(error);
         });
     }
 };
@@ -97,8 +111,12 @@ const mutations = {
             localStorage.setItem('user', JSON.stringify(userData));
         }
     },
+    updatePotentialNeighbors(state, potentialNeighbors) {
+        state.potentialNeighbors = potentialNeighbors;
+    },
     logout: (state) => {
         state.user = undefined;
+        state.potentialNeighbors = undefined;
     },
     updateToken: (state, token) => {
         console.log("UPDATED JWT TOKEN " + token);

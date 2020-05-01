@@ -2,7 +2,7 @@
   <v-container
     class="message-container"
     v-if="selectedChannel">
-    <h1>{{ selectedChannel.friendlyName }}</h1>
+    <h1>{{ selectedChannelDisplayName }}</h1>
     <hr>
     <div class="messages" ref="messageBody">
       <Message
@@ -31,6 +31,7 @@ export default {
     },
     props: {
       selectedChannel: Object,
+      selectedChannelDisplayName: String,
       user: Object,
     },
     data() {
