@@ -32,34 +32,34 @@ def login():
 
 
 @jwt_required
-@USER_BP.route('/<user_id>', methods=['PATCH'])
-def update_user_location(user_id: str):
-    user = user_domain_logic.update_user_location(user_id, request.json)
+@USER_BP.route('/', methods=['PATCH'])
+def update_user_location():
+    user = user_domain_logic.update_user_location(request.json)
     return user_schema.dump(user)
 
 
 @jwt_required
-@USER_BP.route('/nearby/<user_id>', methods=['GET'])
-def get_potential_neighbors(user_id: str):
-    users = user_domain_logic.get_potential_neighbors(user_id)
+@USER_BP.route('/nearby/', methods=['GET'])
+def get_potential_neighbors():
+    users = user_domain_logic.get_potential_neighbors()
     return jsonify([user_schema.dump(user) for user in users])
 
 
-@USER_BP.route('/neighbors/<user_id>', methods=['GET'])
-def get_neighbors(user_id: str):
-    users = user_domain_logic.get_neighbors(user_id)
+@USER_BP.route('/neighbors/', methods=['GET'])
+def get_neighbors():
+    users = user_domain_logic.get_neighbors()
     return jsonify([user_schema.dump(user) for user in users])
 
 
-@USER_BP.route('/add_neighbor/<user_id>', methods=['PUT'])
-def add_neighbor(user_id: int):
+@USER_BP.route('/add_neighbor/', methods=['PUT'])
+def add_neighbor():
     neighbor_id = request.json['neighbor_id']
-    user_domain_logic.add_neighbor(user_id, neighbor_id)
+    user_domain_logic.add_neighbor(neighbor_id)
     return "Updated successfully.", HTTPStatus.NO_CONTENT
 
 
-@USER_BP.route('/remove_neighbor/<user_id>', methods=['PUT'])
-def remove_neighbor(user_id):
+@USER_BP.route('/remove_neighbor/', methods=['PUT'])
+def remove_neighbor():
     neighbor_id = request.json['neighbor_id']
-    user_domain_logic.black_list_neighbor(user_id, neighbor_id)
+    user_domain_logic.black_list_neighbor(neighbor_id)
     return "Updated successfully.", HTTPStatus.NO_CONTENT
