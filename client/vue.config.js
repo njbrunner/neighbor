@@ -1,5 +1,5 @@
 module.exports = {
-  "publicPath": "/covid-19/",
+  "publicPath": "/neighbor/",
   "transpileDependencies": [
     "vuetify"
   ]
