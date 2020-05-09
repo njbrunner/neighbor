@@ -9,7 +9,4 @@ One sunny day of quarantine while walking my dog, I noticed someone had flyered 
 Neighbor is a free platform designed to connect those who need assistance with those who are willing to provide it. After signing up, Neighbor uses your location to match you with others in your area who can either provide assistance or are seeking assistance. Neighbor offers a chat interface so neighbors may communicate the specifics of their needs and make arrangements with others.
 
 ### Stack
-Vue.js
-Flask
-Gunicorn
-MongoDB
+Vue.js | Flask | Gunicorn | MongoDB
