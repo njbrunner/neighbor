@@ -61,9 +61,9 @@ def create_app(test_config=None):
     create_default_roles()
 
     # a simple page that says hello
-    @app.route('/')
-    def hello():
-        return 'Hello, World!'
+    @app.route('/version')
+    def get_version():
+        return 'Version: beta.0'
 
     return app
 
