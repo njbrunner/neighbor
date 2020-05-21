@@ -42,4 +42,4 @@ jobs:
         TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
         TWILIO_CHAT_SERVICE_SID: ${{ secrets.TWILIO_CHAT_SERVICE_SID }}
       run: |
-        pytest server/
+        pytest server/ --junitxml=junit/test-results.xml
