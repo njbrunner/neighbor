@@ -1,7 +1,5 @@
 import os
-from os.path import dirname, join
 
-from dotenv import find_dotenv, load_dotenv
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -12,41 +10,13 @@ from app.utilities import create_default_roles
 from app.domain_logic import user_domain_logic
 from app.models import User
 
-dotenv_path = join(dirname(__file__), '.env')
-load_dotenv(dotenv_path)
 jwt_manager = JWTManager()
 
-class DevelopmentConfig(object):
-    DEBUG = True
-    TESTING = True
-
-    # Authentication
-    JWT_SECRET_KEY = "enter_secret_here"
-
-    # RetryableWrites are unsupported for mLab MongoDB
-    MONGO_URI = os.environ.get('MONGODB_URI')
-    if MONGO_URI:
-        MONGO_URI = MONGO_URI + "?retryWrites=false"
-    MONGODB_SETTINGS = {
-        'host': MONGO_URI
-    }
-    # MONGO_URI = "mongodb://localhost:27017/covid-19?retryWrites=false"
-    # MONGODB_SETTINGS = {
-    #     'host': MONGO_URI
-    # }
-
-    ACCOUNT_SID = os.environ['TWILIO_ACCOUNT_SID']
-    API_KEY = os.environ['TWILIO_API_KEY']
-    API_SECRET = os.environ['TWILIO_API_SECRET']
-    CHAT_SERVICE_SID = os.environ.get('TWILIO_CHAT_SERVICE_SID', None)
-    AUTH_TOKEN = os.environ['TWILIO_AUTH_TOKEN']
-
-
-def create_app(test_config=None):
+def create_app(config):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
 
-    app.config.from_object(DevelopmentConfig)
+    app.config.from_object(config)
 
     # ensure the instance folder exists
     try:
@@ -63,7 +33,7 @@ def create_app(test_config=None):
     # a simple page that says hello
     @app.route('/version')
     def get_version():
-        return 'Version: beta.0'
+        return f'Version: beta.0 Config: {app.config["CONFIGURATION_NAME"]}'
 
     return app
 

@@ -9,12 +9,13 @@ from werkzeug.security import generate_password_hash
 import app
 from app.models.role import Role
 from app.models.user import User
+from config import TestingConfig
 
 
 @pytest.fixture(scope='class')
 def start_app():
     """Provide a configured Flask application."""
-    application = app.create_app()
+    application = app.create_app(TestingConfig)
     yield application
 
 
